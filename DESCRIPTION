@@ -1,0 +1,10 @@
+Package: TommySampling
+Type: Package
+Title: Tommy's Sampling Algorithms
+Version: 0.0.1
+Date: 2017-09-06
+Author: Andrew M. Raim
+Maintainer: Andrew M. Raim <andrew.raim@census.gov>
+Description: TBD
+License: GPL (>= 2)
+# Depends:
