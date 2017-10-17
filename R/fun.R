@@ -3,9 +3,13 @@
 # Statistics & Probability Letters, 129:50-57.
 # http://www.sciencedirect.com/science/article/pii/S0167715217301657.
 
-algIII <- function(n, N.str, S.str, lo.str, hi.str, verbose = FALSE)
+algIII <- function(n, N.str, S.str,
+	lo.str = rep(1, length(N.str)),
+	hi.str = rep(Inf, length(N.str)),
+	verbose = FALSE)
 {
 	n.str <- lo.str
+	a.str < lo.str
 	b.str <- pmin(hi.str, N.str)
 
 	if (any(n.str > b.str)) {
@@ -20,7 +24,7 @@ algIII <- function(n, N.str, S.str, lo.str, hi.str, verbose = FALSE)
 
 		if (verbose) {
 			cat("----- About to make selection", r, "-----\n")
-			print(data.frame(n.str, V.str, lo.str, b.str))
+			print(data.frame(n.str, V.str, a.str, b.str))
 			cat("Selecting a unit from strata", h, "\n")
 		}
 
@@ -31,7 +35,7 @@ algIII <- function(n, N.str, S.str, lo.str, hi.str, verbose = FALSE)
 
 	if (verbose) {
 		cat("----- After", r, "selections -----\n")
-		print(data.frame(n.str, lo.str, b.str))
+		print(data.frame(n.str, a.str, b.str))
 		cat("v =", v, "\n")
 	}
  
@@ -45,6 +49,7 @@ algIV <- function(v0, N.str, S.str,
 	verbose = FALSE)
 {
 	n.str <- lo.str
+	a.str < lo.str
 	b.str <- pmin(hi.str, N.str)
 	tol <- 1e-10
 
@@ -62,7 +67,7 @@ algIV <- function(v0, N.str, S.str,
 
 		if (verbose) {
 			cat("----- About to make selection", r, "-----\n")
-			print(data.frame(n.str, V.str, lo.str, b.str))
+			print(data.frame(n.str, V.str, a.str, b.str))
 			cat("Currently v =", v, " and v0 =", v0, "\n")
 		}
 		
@@ -81,9 +86,35 @@ algIV <- function(v0, N.str, S.str,
 
 	if (verbose) {
 		cat("----- After", r, "selections -----\n")
-		print(data.frame(n.str, lo.str, b.str))
+		print(data.frame(n.str, a.str, b.str))
 		cat("v =", v, " and v0 =", v0, "\n")
 	}
 
 	list(n.str = n.str, v = v, reps = r)
+}
+
+algAdhoc <- function(n, N.str, S.str,
+	lo.str = rep(1, length(N.str)),
+	hi.str = rep(Inf, length(N.str)),
+	verbose = TRUE)
+{
+	a.str <- lo.str
+	b.str <- pmin(hi.str, N.str)
+
+	if (any(a.str > b.str)) {
+		stop("There are no feasible solutions")
+	}
+
+	n.str.ney <- n * normalize(N.str * S.str)
+	n.str.ney.ru <- ceiling(n.str.ney)
+	n.str <- pmin(pmax(n.str.ney.ru, a.str), b.str)
+	v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
+	
+	if (verbose) {
+		cat("----- Selection -----\n")
+		print(data.frame(S.str, n.str.ney, n.str.ney.ru, a.str, b.str, n.str))
+		cat("v =", v, "\n")
+	}
+
+	list(n.str = n.str, v = v, n.str.ney = n.str.ney, n.str.ney.ru = n.str.ney.ru)
 }

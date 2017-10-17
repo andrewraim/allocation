@@ -10,6 +10,11 @@ n <- 10
 out3 <- algIII(n, N.str, S.str, lo.str, hi.str, verbose = TRUE)
 print(out3)
 
+# ----- Test ad hoc allocation method with above example -----
+outAdhoc3 <- algAdhoc(n, N.str, S.str, lo.str, hi.str, verbose = TRUE)
+print(outAdhoc3)
+
+
 # ----- Test Algorithm IV using the example in the paper -----
 H <- 10
 v0 <- 388910760^2
@@ -19,3 +24,11 @@ S.str <- c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000, 2
 
 out4 <- algIV(v0, N.str, S.str, lo.str, verbose = TRUE)
 print(out4)
+
+# ----- Test ad hoc allocation method using the example in the paper -----
+# The code currently doesn't show strata 10 in the results, but it's fixed at 13.
+n <- sum(N.str[-10] * S.str[-10])^2 / ((0.042 * 9259780000)^2 + sum(N.str[-10] * S.str[-10]^2))
+outAdhoc4 <- algAdhoc(n, N.str[-10], S.str[-10], lo.str[-10], verbose = TRUE)
+print(outAdhoc4)
+
+
