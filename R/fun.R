@@ -36,22 +36,20 @@ algIII <- function(n, N.str, S.str,
 	if (verbose) {
 		cat("----- After", r, "selections -----\n")
 		print(data.frame(n.str, a.str, b.str))
-		cat("v =", v, "\n")
+		printf("v = %f\n", v)
 	}
  
 	list(n.str = n.str, reps = r, v = v)
 }
 
-
 algIV <- function(v0, N.str, S.str,
 	lo.str = rep(1, length(N.str)),
 	hi.str = rep(Inf, length(N.str)),
-	verbose = FALSE)
+	verbose = FALSE, tol = 1e-10)
 {
 	n.str <- lo.str
-	a.str < lo.str
+	a.str <- lo.str
 	b.str <- pmin(hi.str, N.str)
-	tol <- 1e-10
 
 	if (any(n.str > b.str)) {
 		stop("There are no feasible solutions")
@@ -68,7 +66,7 @@ algIV <- function(v0, N.str, S.str,
 		if (verbose) {
 			cat("----- About to make selection", r, "-----\n")
 			print(data.frame(n.str, V.str, a.str, b.str))
-			cat("Currently v =", v, " and v0 =", v0, "\n")
+			printf("Currently v = %f and v0 = %f\n", v, v0)
 		}
 		
 		if (all(V.str <= tol)) {
@@ -84,19 +82,24 @@ algIV <- function(v0, N.str, S.str,
 		v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
 	}
 
-	if (verbose) {
-		cat("----- After", r, "selections -----\n")
-		print(data.frame(n.str, a.str, b.str))
-		cat("v =", v, " and v0 =", v0, "\n")
-	}
+	structure(
+		list(n.str = n.str, a.str = a.str, b.str = b.str, reps = r, v = v,
+			v0 = v0, S.str = S.str),
+		class = "alg.Iv"
+	)
+}
 
-	list(n.str = n.str, v = v, reps = r)
+print.alg.Iv <- function(object)
+{
+	cat("----- After", object$reps, "selections -----\n")
+	print(data.frame(S.str = object$S.str, a.str = object$a.str,
+		b.str = object$b.str, n.str = object$n.str))
+	printf("v = %f and v0 = %f\n", object$v, object$v0)
 }
 
 algAdhoc <- function(n, N.str, S.str,
 	lo.str = rep(1, length(N.str)),
-	hi.str = rep(Inf, length(N.str)),
-	verbose = TRUE)
+	hi.str = rep(Inf, length(N.str)))
 {
 	a.str <- lo.str
 	b.str <- pmin(hi.str, N.str)
@@ -110,11 +113,18 @@ algAdhoc <- function(n, N.str, S.str,
 	n.str <- pmin(pmax(n.str.ney.ru, a.str), b.str)
 	v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
 	
-	if (verbose) {
-		cat("----- Selection -----\n")
-		print(data.frame(S.str, n.str.ney, n.str.ney.ru, a.str, b.str, n.str))
-		cat("v =", v, "\n")
-	}
+	structure(
+		list(S.str = S.str, n.str.ney = n.str.ney,
+			n.str.ney.ru = n.str.ney.ru, a.str = a.str,
+			b.str = b.str, n.str = n.str, v = v),
+		class = "alg.adhoc"
+	)
+}
 
-	list(n.str = n.str, v = v, n.str.ney = n.str.ney, n.str.ney.ru = n.str.ney.ru)
+print.alg.adhoc <- function(object)
+{
+	print(data.frame(S.str = object$S.str, n.str.ney = object$n.str.ney,
+		n.str.ney.ru = object$n.str.ney.ru, a.str = object$a.str,
+		b.str = object$b.str, n.str = object$n.str))
+	printf("v = %f\n", object$v)
 }
