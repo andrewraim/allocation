@@ -7,4 +7,4 @@ Author: Andrew M. Raim
 Maintainer: Andrew M. Raim <andrew.raim@census.gov>
 Description: TBD
 License: GPL (>= 2)
-# Depends:
+Depends: Rmpfr
