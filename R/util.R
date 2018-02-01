@@ -17,13 +17,12 @@ my.format <- function(x, decimal.digits = getOption("TommySampling.print.decimal
 {
 	L <- length(x)
 
-	idx.notna <- which(!is.na(x))
+	idx.notna <- which(!is.na(x) & abs(x) > 0)
 	whole.digits <- rep(1,L)
 	whole.digits[idx.notna] <- asNumeric(ceiling(log10(abs(x[idx.notna]))))
 	print.digits <- whole.digits + decimal.digits
 
 	out <- numeric(L)
-
 	for (l in 1:L) {
 		out[l] <- formatMpfr(x[l], digits = print.digits[l], big.mark = ",")
 	}

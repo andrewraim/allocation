@@ -112,7 +112,7 @@ print.alg.Iv <- function(object)
 	print(data.frame(S.str = my.format(object$S.str),
 		a.str = my.format(object$a.str),
 		b.str = my.format(object$b.str),
-		n.str = my.format(object$n.str)))
+		n.str = my.format(object$n.str, 0)))
 	printf("Final v = %s\n", my.format(object$v))
 	printf("Target v0 = %s\n", my.format(object$v0))
 }
@@ -148,10 +148,10 @@ algAdhoc <- function(n, N.str, S.str,
 print.alg.adhoc <- function(object)
 {
 	print(data.frame(S.str = my.format(object$S.str),
-		n.str.ney = asNumeric(object$n.str.ney),
-		n.str.ney.ru = asNumeric(object$n.str.ney.ru),
-		a.str = asNumeric(object$a.str),
-		b.str = asNumeric(object$b.str),
-		n.str = asNumeric(object$n.str)))
+		n.str.ney = my.format(object$n.str.ney),
+		n.str.ney.ru = my.format(object$n.str.ney.ru, 0),
+		a.str = my.format(object$a.str),
+		b.str = my.format(object$b.str),
+		n.str = my.format(object$n.str, 0)))
 	printf("v = %s\n", my.format(object$v))
 }
