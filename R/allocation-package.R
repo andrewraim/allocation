@@ -2,8 +2,10 @@
 #' Algorithms for Exact Optimization Allocation
 #' 
 #' @description 
-#' Algorithms III and IV from Wright (2017), and classical unconstrained
-#' Neyman allocation.
+#' Algorithms III and IV from Wright (2017), and classical (unconstrained)
+#' Neyman allocation. Algorithm III finds the optimial allocation for a
+#' given total sample size \code{n}. Algorithm IV samples until the overall
+#' variance is smaller than a given \code{v0}.
 #' 
 #' @param n Target sample size for Algorithm III (integer)
 #' @param v0 Target variance for Algorithm IV (numeric)
