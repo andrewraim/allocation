@@ -7,4 +7,5 @@ Author: Tommy Wright, Andrew M. Raim
 Maintainer: Andrew M. Raim <andrew.raim@census.gov>
 Description: To be determined (TBD).
 License: GPL (>= 2)
-Depends: Rmpfr
+Imports: Rmpfr
+RoxygenNote: 6.0.1

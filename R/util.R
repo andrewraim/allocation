@@ -1,6 +1,6 @@
 .onLoad <- function(libname, pkgname){
-	options(TommySampling.prec.bits = 256)
-	options(TommySampling.print.decimals = 4)
+	options(allocation.prec.bits = 256)
+	options(allocation.print.decimals = 4)
 }
 
 normalize <- function(x)
@@ -13,7 +13,8 @@ printf <- function(msg, ...)
 	cat(sprintf(msg, ...))
 }
 
-my.format <- function(x, decimal.digits = getOption("TommySampling.print.decimals"))
+#' @importFrom Rmpfr asNumeric formatMpfr
+my.format <- function(x, decimal.digits = getOption("allocation.print.decimals"))
 {
 	L <- length(x)
 

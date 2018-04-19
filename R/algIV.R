@@ -1,10 +1,12 @@
+#' @name Allocation Methods
+#' @importFrom Rmpfr mpfr
 #' @export
 algIV <- function(v0, N.str, S.str,
 	lo.str = rep(1L, length(N.str)),
 	hi.str = rep(Inf, length(N.str)),
 	verbose = FALSE, tol = 1e-10)
 {
-	prec.bits <- getOption("TommySampling.prec.bits")
+	prec.bits <- getOption("allocation.prec.bits")
 	v0 <- mpfr(v0, prec.bits)
 	S.str <- mpfr(S.str, prec.bits)
 
@@ -53,17 +55,18 @@ algIV <- function(v0, N.str, S.str,
 	structure(
 		list(n.str = n.str, a.str = a.str, b.str = b.str, reps = r, v = v,
 			v0 = v0, S.str = S.str),
-		class = "alg.Iv"
+		class = "algIV"
 	)
 }
 
-print.alg.IV <- function(object)
+#' @export
+print.algIV <- function(x, ...)
 {
-	cat("----- After", object$reps, "selections -----\n")
-	print(data.frame(S.str = my.format(object$S.str),
-		a.str = my.format(object$a.str),
-		b.str = my.format(object$b.str),
-		n.str = my.format(object$n.str, 0)))
-	printf("Final v = %s\n", my.format(object$v))
-	printf("Target v0 = %s\n", my.format(object$v0))
+	cat("----- After", x$reps, "selections -----\n")
+	print(data.frame(S.str = my.format(x$S.str),
+		a.str = my.format(x$a.str),
+		b.str = my.format(x$b.str),
+		n.str = my.format(x$n.str, 0)))
+	printf("Final v = %s\n", my.format(x$v))
+	printf("Target v0 = %s\n", my.format(x$v0))
 }

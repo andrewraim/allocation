@@ -1,6 +1,0 @@
-# Exportd
-exportPattern("^[^\\.]")
-
-# Imports
-#import(Rcpp)
-

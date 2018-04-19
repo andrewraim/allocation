@@ -1,26 +1,12 @@
-#' Exact Optimization Allocation, Algorithms III and IV
-#'
-#' @param n 
-#' @param N.str 
-#' @param S.str 
-#' @param lo.str 
-#' @param hi.str 
-#' @param verbose 
-#'
-#' @return
-#'
-#' @examples
-#' @references
-#' Tommy Wright (2017), Exact optimal sample allocation: More efficient than Neyman,
-#' Statistics & Probability Letters, 129:50-57.
-
+#' @name Allocation Methods
+#' @importFrom Rmpfr mpfr asNumeric
 #' @export
 algIII <- function(n, N.str, S.str,
 	lo.str = rep(1L, length(N.str)),
 	hi.str = rep(Inf, length(N.str)),
 	verbose = FALSE)
 {
-	prec.bits <- getOption("TommySampling.prec.bits")
+	prec.bits <- getOption("allocation.prec.bits")
 	S.str <- mpfr(S.str, prec.bits)
 
 	n.str <- lo.str
@@ -57,6 +43,15 @@ algIII <- function(n, N.str, S.str,
 		printf("v = %s\n", my.format(v))
 	}
 
-	list(n.str = n.str, reps = r, v = v)
+	structure(
+		list(n.str = n.str, a.str = a.str, b.str = b.str, reps = r, v = v,
+			S.str = S.str),
+		class = "algIII"
+	)
 }
 
+#' @export
+print.algIII <- function(x, ...)
+{
+	stop("Write me")
+}

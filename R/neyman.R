@@ -1,9 +1,12 @@
-algAdhoc <- function(n, N.str, S.str,
+#' @name Allocation Methods
+#' @importFrom Rmpfr mpfr
+#' @export
+neyman <- function(n, N.str, S.str,
 	lo.str = rep(1, length(N.str)),
 	hi.str = rep(Inf, length(N.str)),
 	verbose = TRUE)
 {
-	prec.bits <- getOption("TommySampling.prec.bits")
+	prec.bits <- getOption("allocation.prec.bits")
 	S.str <- mpfr(S.str, prec.bits)
 
 	a.str <- mpfr(lo.str, prec.bits)
@@ -22,17 +25,18 @@ algAdhoc <- function(n, N.str, S.str,
 		list(S.str = S.str, n.str.ney = n.str.ney,
 			n.str.ney.ru = n.str.ney.ru, a.str = a.str,
 			b.str = b.str, n.str = n.str, v = v),
-		class = "alg.adhoc"
+		class = "neyman"
 	)
 }
 
-print.alg.adhoc <- function(object)
+#' @export
+print.neyman <- function(x, ...)
 {
-	print(data.frame(S.str = my.format(object$S.str),
-		n.str.ney = my.format(object$n.str.ney),
-		n.str.ney.ru = my.format(object$n.str.ney.ru, 0),
-		a.str = my.format(object$a.str),
-		b.str = my.format(object$b.str),
-		n.str = my.format(object$n.str, 0)))
-	printf("v = %s\n", my.format(object$v))
+	print(data.frame(S.str = my.format(x$S.str),
+		n.str.ney = my.format(x$n.str.ney),
+		n.str.ney.ru = my.format(x$n.str.ney.ru, 0),
+		a.str = my.format(x$a.str),
+		b.str = my.format(x$b.str),
+		n.str = my.format(x$n.str, 0)))
+	printf("v = %s\n", my.format(x$v))
 }
