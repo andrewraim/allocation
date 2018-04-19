@@ -66,3 +66,11 @@ n <- sum(N.str[-10] * S.str[-10])^2 / ((cv * rev)^2 + sum(N.str[-10] * S.str[-10
 out2 <- neyman(n, N.str[-10], S.str[-10], verbose = TRUE)
 print(out2)
 ```
+
+Extract the final allocations.
+```{r}
+alloc(out1)
+alloc(out2)
+```
+
+```
