@@ -29,3 +29,9 @@ my.format <- function(x, decimal.digits = getOption("allocation.print.decimals")
 	}
 	return(out)
 }
+
+#' @export
+alloc <- function(object)
+{
+	UseMethod("alloc")
+}

@@ -1,0 +1,68 @@
+---
+title: "Demonstration"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(Rmpfr)
+library(allocation)
+```
+
+# Algorithm III: Sampling with Target Sample Size
+Test Algorithm III using the example in the Wright (2017).
+
+```{r}
+N.str <- c(47, 61, 41)
+S.str <- sqrt(c(100, 36, 16))
+lo.str <- c(1,2,3)
+hi.str <- c(5,6,4)
+n <- 10
+
+out1 <- algIII(n, N.str, S.str, lo.str, hi.str, verbose = TRUE)
+print(out1)
+```
+
+Compare the above results to Neyman allocation
+```{r}
+out2 <- neyman(n, N.str, S.str, verbose = TRUE)
+print(out2)
+```
+
+Internally, we work with high precision numbers via the `Rmpfr` package. We provided an `alloc` accessor function to extract the allocation as a numeric vector.
+
+```{r}
+alloc(out1)
+alloc(out2)
+```
+
+The numerical precision and number of decimal points printed, can be changed by setting a global option for the `allocation` package.
+```{r}
+options(allocation.prec.bits = 256)
+options(allocation.print.decimals = 4)
+```
+
+# Algorithm IV: Sampling with Target Variance
+Test Algorithm IV using the example in the Wright (2017). Since our target variance `v0` is a very large number, we pass it as an `mpfr` object to avoid loss of precision.
+```{r}
+H <- 10
+v0 <- mpfr(388910760, 256)^2
+N.str <- c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
+lo.str <- c(3,3,3,3,3,3,3,3,3,13)
+S.str <- c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000, 29334000, 1233311000)
+
+out1 <- algIV(v0, N.str, S.str, lo.str, verbose = TRUE)
+print(out1)
+```
+
+Compare the above results to Neyman allocation. Here, we first need to compute a target sample size. This is done with a given cv and revenue data. See Wright (2017) for details. We also exclude the 10th stratum from the allocation procedure, as it is a certainty stratum; its allocation is considered fixed at 13.
+```{r}
+cv <- 0.042
+rev <- mpfr(9259780000, 256)
+n <- sum(N.str[-10] * S.str[-10])^2 / ((cv * rev)^2 + sum(N.str[-10] * S.str[-10]^2))
+out2 <- neyman(n, N.str[-10], S.str[-10], verbose = TRUE)
+print(out2)
+```

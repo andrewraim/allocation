@@ -1,30 +1,18 @@
 #' @name Allocation Methods
+#' @aliases neyman
 #' @importFrom Rmpfr mpfr
 #' @export
-neyman <- function(n, N.str, S.str,
-	lo.str = rep(1, length(N.str)),
-	hi.str = rep(Inf, length(N.str)),
-	verbose = TRUE)
+neyman <- function(n, N.str, S.str, verbose = FALSE)
 {
+	stopifnot(length(N.str) == length(S.str))
+
 	prec.bits <- getOption("allocation.prec.bits")
 	S.str <- mpfr(S.str, prec.bits)
-
-	a.str <- mpfr(lo.str, prec.bits)
-	b.str <- mpfr(pmin(hi.str, N.str), prec.bits)
-
-	if (any(a.str > b.str)) {
-		stop("There are no feasible solutions")
-	}
-
-	n.str.ney <- n * normalize(N.str * S.str)
-	n.str.ney.ru <- ceiling(n.str.ney)
-	n.str <- pmin(pmax(n.str.ney.ru, a.str), b.str)
+	n.str <- n * normalize(N.str * S.str)
 	v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
 
 	structure(
-		list(S.str = S.str, n.str.ney = n.str.ney,
-			n.str.ney.ru = n.str.ney.ru, a.str = a.str,
-			b.str = b.str, n.str = n.str, v = v),
+		list(N.str = N.str, S.str = S.str, n.str = n.str, v = v),
 		class = "neyman"
 	)
 }
@@ -32,11 +20,15 @@ neyman <- function(n, N.str, S.str,
 #' @export
 print.neyman <- function(x, ...)
 {
-	print(data.frame(S.str = my.format(x$S.str),
-		n.str.ney = my.format(x$n.str.ney),
-		n.str.ney.ru = my.format(x$n.str.ney.ru, 0),
-		a.str = my.format(x$a.str),
-		b.str = my.format(x$b.str),
-		n.str = my.format(x$n.str, 0)))
-	printf("v = %s\n", my.format(x$v))
+	print(data.frame(
+		N = x$N.str,
+		S = my.format(x$S.str),
+		allocation = my.format(x$n.str)))
+	printf("----\n")
+	printf("v: %s\n", my.format(x$v))
+}
+
+#' @export
+alloc.neyman <- function(object) {
+	asNumeric(object$n.str)
 }

@@ -1,4 +1,4 @@
-library(TommySampling)
+library(allocation)
 
 # ----- Test Algorithm III using the example in the paper -----
 N.str <- c(47, 61, 41)
