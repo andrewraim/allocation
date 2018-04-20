@@ -2,7 +2,7 @@
 #' @aliases neyman
 #' @importFrom Rmpfr mpfr
 #' @export
-neyman <- function(n, N.str, S.str, verbose = FALSE)
+neyman <- function(n, N.str, S.str)
 {
 	stopifnot(length(N.str) == length(S.str))
 

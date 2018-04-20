@@ -22,13 +22,14 @@ lo.str <- c(1,2,3)
 hi.str <- c(5,6,4)
 n <- 10
 
-out1 <- algIII(n, N.str, S.str, lo.str, hi.str, verbose = TRUE)
+out1 <- algIII(n, N.str, S.str, lo.str, hi.str)
 print(out1)
 ```
+To see details justifying each selection, run `algIII` with the option `verbose = TRUE`.
 
 Compare the above results to Neyman allocation
 ```{r}
-out2 <- neyman(n, N.str, S.str, verbose = TRUE)
+out2 <- neyman(n, N.str, S.str)
 print(out2)
 ```
 
@@ -54,16 +55,17 @@ N.str <- c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
 lo.str <- c(3,3,3,3,3,3,3,3,3,13)
 S.str <- c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000, 29334000, 1233311000)
 
-out1 <- algIV(v0, N.str, S.str, lo.str, verbose = TRUE)
+out1 <- algIV(v0, N.str, S.str, lo.str)
 print(out1)
 ```
+To see details justifying each selection, run `algIV` with the option `verbose = TRUE`.
 
 Compare the above results to Neyman allocation. Here, we first need to compute a target sample size. This is done with a given cv and revenue data. See Wright (2017) for details. We also exclude the 10th stratum from the allocation procedure, as it is a certainty stratum; its allocation is considered fixed at 13.
 ```{r}
 cv <- 0.042
 rev <- mpfr(9259780000, 256)
 n <- sum(N.str[-10] * S.str[-10])^2 / ((cv * rev)^2 + sum(N.str[-10] * S.str[-10]^2))
-out2 <- neyman(n, N.str[-10], S.str[-10], verbose = TRUE)
+out2 <- neyman(n, N.str[-10], S.str[-10])
 print(out2)
 ```
 
