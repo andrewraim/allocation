@@ -7,13 +7,22 @@ output: md_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Installation
+To install from Github, obtain the `devtools` package and run the following in R.
+
+```{r, eval=FALSE}
+devtools::install_github("andrewraim/allocation")
+```
+
+# Usage
+
 ```{r}
 suppressMessages(library(Rmpfr))
 suppressMessages(library(allocation))
 ```
 
-# Algorithm III: Sampling with Target Sample Size
-Test Algorithm III using the example in the Wright (2017).
+## Algorithm III: Sampling with Target Sample Size
+Test Algorithm III using an example in the Wright (2017).
 
 ```{r}
 N.str <- c(47, 61, 41)
@@ -46,8 +55,8 @@ options(allocation.prec.bits = 256)
 options(allocation.print.decimals = 4)
 ```
 
-# Algorithm IV: Sampling with Target Variance
-Test Algorithm IV using the example in the Wright (2017). Since our target variance `v0` is a very large number, we pass it as an `mpfr` object to avoid loss of precision.
+## Algorithm IV: Sampling with Target Variance
+Test Algorithm IV using an example in the Wright (2017). Since our target variance `v0` is a very large number, we pass it as an `mpfr` object to avoid loss of precision.
 ```{r}
 H <- 10
 v0 <- mpfr(388910760, 256)^2

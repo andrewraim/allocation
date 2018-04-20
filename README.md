@@ -1,10 +1,21 @@
+Installation
+============
+
+To install from Github, obtain the `devtools` package and run the
+following in R.
+
+    devtools::install_github("andrewraim/allocation")
+
+Usage
+=====
+
     suppressMessages(library(Rmpfr))
     suppressMessages(library(allocation))
 
 Algorithm III: Sampling with Target Sample Size
-===============================================
+-----------------------------------------------
 
-Test Algorithm III using the example in the Wright (2017).
+Test Algorithm III using an example in the Wright (2017).
 
     N.str <- c(47, 61, 41)
     S.str <- sqrt(c(100, 36, 16))
@@ -58,9 +69,9 @@ changed by setting a global option for the `allocation` package.
     options(allocation.print.decimals = 4)
 
 Algorithm IV: Sampling with Target Variance
-===========================================
+-------------------------------------------
 
-Test Algorithm IV using the example in the Wright (2017). Since our
+Test Algorithm IV using an example in the Wright (2017). Since our
 target variance `v0` is a very large number, we pass it as an `mpfr`
 object to avoid loss of precision.
 
