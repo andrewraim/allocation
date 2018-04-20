@@ -1,6 +1,6 @@
 ---
 title: "Demonstration"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
@@ -8,8 +8,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-library(Rmpfr)
-library(allocation)
+suppressMessages(library(Rmpfr))
+suppressMessages(library(allocation))
 ```
 
 # Algorithm III: Sampling with Target Sample Size

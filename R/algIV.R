@@ -42,8 +42,8 @@ algIV <- function(v0, N.str, S.str,
 			print(data.frame(
 				value = my.format(V.str),
 				lower_bound = lo.str,
-				upper_bound = hi.str),
-				allocation = my.format(n.str,0))
+				upper_bound = hi.str,
+				allocation = my.format(n.str,0)))
 		}
 		
 		if (all(V.str <= tol)) {
