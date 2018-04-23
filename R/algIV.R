@@ -5,7 +5,7 @@
 algIV <- function(v0, N.str, S.str,
 	lo.str = rep(1, length(N.str)),
 	hi.str = rep(Inf, length(N.str)),
-	verbose = FALSE, tol = 1e-10)
+	verbose = FALSE)
 {
 	stopifnot(length(N.str) == length(S.str))
 	stopifnot(length(N.str) == length(lo.str))
@@ -45,8 +45,10 @@ algIV <- function(v0, N.str, S.str,
 				upper_bound = hi.str,
 				allocation = my.format(n.str,0)))
 		}
-		
-		if (all(V.str <= tol)) {
+
+		# If all units are selected, all remaining strata values will be zero at
+		# this point. But maybe not exactly zero because of floating point math.
+		if (all(V.str <= 1e-10)) {
 			warning("All units from all strata have been selected, but v0 was not attained")
 			break
 		}

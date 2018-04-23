@@ -2,15 +2,18 @@ Installation
 ============
 
 To install from Github, obtain the `devtools` package and run the
-following in R.
+following in R. The `Rmpfr` package is used - both inside the
+`allocation` package and to set up the following examples - for high
+precision arithmetic.
 
+    install.packages("Rmpfr")
     devtools::install_github("andrewraim/allocation")
 
 Usage
 =====
 
-    suppressMessages(library(Rmpfr))
-    suppressMessages(library(allocation))
+    library(Rmpfr)
+    library(allocation)
 
 Algorithm III: Sampling with Target Sample Size
 -----------------------------------------------
