@@ -15,7 +15,8 @@
 #' @param hi.str Sample size upper bounds for each stratum (numeric vector)
 #' @param verbose Print detailed information for each selection (boolean)
 #'
-#' @return
+#' @return An object which contains the results; the structure depends on 
+#' allocation method.
 #'
 #' @references
 #' Tommy Wright (2012). The Equivalence of Neyman Optimum Allocation for

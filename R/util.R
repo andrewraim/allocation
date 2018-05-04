@@ -30,6 +30,17 @@ my.format <- function(x, decimal.digits = getOption("allocation.print.decimals")
 	return(out)
 }
 
+
+#' @title
+#' Accessor for Solved Allocation
+#' 
+#' @description 
+#' Extract the solved allocation from the result of an an allocation method.
+#' 
+#' @param object Result from an allocation method
+#'
+#' @return A numeric vector; each element contains the allocation for the
+#' corresponding stratum.
 #' @export
 alloc <- function(object)
 {
