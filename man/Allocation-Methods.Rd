@@ -4,31 +4,28 @@
 \name{Allocation Methods}
 \alias{Allocation Methods}
 \alias{algIII}
-\alias{Allocation Methods}
 \alias{algIV}
-\alias{Allocation Methods}
-\alias{Allocation Methods}
 \alias{neyman}
 \title{Algorithms for Exact Optimization Allocation}
 \usage{
-algIII(n, N.str, S.str, lo.str = rep(1, length(N.str)), hi.str = rep(Inf,
-  length(N.str)), verbose = FALSE)
+algIII(n, N_str, S_str, lo_str = rep(1, length(N_str)),
+  hi_str = rep(Inf, length(N_str)), verbose = FALSE)
 
-algIV(v0, N.str, S.str, lo.str = rep(1, length(N.str)), hi.str = rep(Inf,
-  length(N.str)), verbose = FALSE)
+algIV(v0, N_str, S_str, lo_str = rep(1, length(N_str)),
+  hi_str = rep(Inf, length(N_str)), verbose = FALSE)
 
-neyman(n, N.str, S.str)
+neyman(n, N_str, S_str)
 }
 \arguments{
 \item{n}{Target sample size for Algorithm III (integer)}
 
-\item{N.str}{Population size for each stratum (integer vector)}
+\item{N_str}{Population size for each stratum (integer vector)}
 
-\item{S.str}{Standard deviation for each stratum (numeric vector)}
+\item{S_str}{Standard deviation for each stratum (numeric vector)}
 
-\item{lo.str}{Sample size lower bounds for each stratum (numeric vector)}
+\item{lo_str}{Sample size lower bounds for each stratum (numeric vector)}
 
-\item{hi.str}{Sample size upper bounds for each stratum (numeric vector)}
+\item{hi_str}{Sample size upper bounds for each stratum (numeric vector)}
 
 \item{verbose}{Print detailed information for each selection (boolean)}
 
@@ -43,6 +40,19 @@ Algorithms III and IV from Wright (2017), and classical (unconstrained)
 Neyman allocation. Algorithm III finds the optimial allocation for a
 given total sample size \code{n}. Algorithm IV samples until the overall
 variance is smaller than a given \code{v0}.
+}
+\details{
+Global options for the package (with defaults) are:
+\itemize{
+\item \code{options(allocation.prec.bits = 256)} Number of bits of
+    precision to use with \code{mpfr} objects in internal calculations.
+\item \code{options(allocation.print.decimals = 4)} Number of decimals
+    to display in output.
+\item \code{options(allocation.algIV.tol = 1e-10)} A small positive
+    number for use in algIV; if all strata have \code{V_str <= tol},
+    no more allocation is possible, even if target value \code{v0} has
+    not yet been attained.
+}
 }
 \references{
 Tommy Wright (2012). The Equivalence of Neyman Optimum Allocation for

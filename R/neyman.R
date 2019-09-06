@@ -2,33 +2,33 @@
 #' @aliases neyman
 #' @importFrom Rmpfr mpfr
 #' @export
-neyman <- function(n, N.str, S.str)
+neyman = function(n, N_str, S_str)
 {
-	stopifnot(length(N.str) == length(S.str))
+	stopifnot(length(N_str) == length(S_str))
 
-	prec.bits <- getOption("allocation.prec.bits")
-	S.str <- mpfr(S.str, prec.bits)
-	n.str <- n * normalize(N.str * S.str)
-	v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
+	prec_bits = getOption("allocation.prec.bits")
+	S_str = mpfr(S_str, prec_bits)
+	n_str = n * normalize(N_str * S_str)
+	v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
 
 	structure(
-		list(N.str = N.str, S.str = S.str, n.str = n.str, v = v),
+		list(N_str = N_str, S_str = S_str, n_str = n_str, v = v),
 		class = "neyman"
 	)
 }
 
 #' @export
-print.neyman <- function(x, ...)
+print.neyman = function(x, ...)
 {
 	print(data.frame(
-		N = x$N.str,
-		S = my.format(x$S.str),
-		allocation = my.format(x$n.str)))
+		N = x$N_str,
+		S = my_format(x$S_str),
+		allocation = my_format(x$n_str)))
 	printf("----\n")
-	printf("v: %s\n", my.format(x$v))
+	printf("v: %s\n", my_format(x$v))
 }
 
 #' @export
-alloc.neyman <- function(object) {
-	asNumeric(object$n.str)
+alloc.neyman = function(object) {
+	asNumeric(object$n_str)
 }

@@ -9,14 +9,27 @@
 #' 
 #' @param n Target sample size for Algorithm III (integer)
 #' @param v0 Target variance for Algorithm IV (numeric)
-#' @param N.str Population size for each stratum (integer vector)
-#' @param S.str Standard deviation for each stratum (numeric vector)
-#' @param lo.str Sample size lower bounds for each stratum (numeric vector)
-#' @param hi.str Sample size upper bounds for each stratum (numeric vector)
+#' @param N_str Population size for each stratum (integer vector)
+#' @param S_str Standard deviation for each stratum (numeric vector)
+#' @param lo_str Sample size lower bounds for each stratum (numeric vector)
+#' @param hi_str Sample size upper bounds for each stratum (numeric vector)
 #' @param verbose Print detailed information for each selection (boolean)
 #'
 #' @return An object which contains the results; the structure depends on 
 #' allocation method.
+#' 
+#' @details
+#' Global options for the package (with defaults) are:
+#' \itemize{
+#' \item \code{options(allocation.prec.bits = 256)} Number of bits of
+#'     precision to use with \code{mpfr} objects in internal calculations.
+#' \item \code{options(allocation.print.decimals = 4)} Number of decimals
+#'     to display in output.
+#' \item \code{options(allocation.algIV.tol = 1e-10)} A small positive
+#'     number for use in algIV; if all strata have \code{V_str <= tol},
+#'     no more allocation is possible, even if target value \code{v0} has
+#'     not yet been attained.
+#' }
 #'
 #' @references
 #' Tommy Wright (2012). The Equivalence of Neyman Optimum Allocation for

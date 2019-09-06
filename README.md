@@ -1,3 +1,15 @@
+Overview
+========
+
+This package implements several exact optimization methods to allocate
+samples to strata. See the following references for details.
+
+1.  Tommy Wright (2012). The Equivalence of Neyman Optimum Allocation
+    for Sampling and Equal Proportions for Apportioning the U.S. House
+    of Representatives. The American Statistician, 66, pp.217-224.
+2.  Tommy Wright (2017), Exact optimal sample allocation: More efficient
+    than Neyman, Statistics & Probability Letters, 129, pp.50-57.
+
 Installation
 ============
 
@@ -18,15 +30,15 @@ Usage
 Algorithm III: Sampling with Target Sample Size
 -----------------------------------------------
 
-Test Algorithm III using an example in the Wright (2017).
+Run Algorithm III using an example in Wright (2017).
 
-    N.str <- c(47, 61, 41)
-    S.str <- sqrt(c(100, 36, 16))
-    lo.str <- c(1,2,3)
-    hi.str <- c(5,6,4)
-    n <- 10
+    N_str = c(47, 61, 41)
+    S_str = sqrt(c(100, 36, 16))
+    lo_str = c(1,2,3)
+    hi_str = c(5,6,4)
+    n = 10
 
-    out1 <- algIII(n, N.str, S.str, lo.str, hi.str)
+    out1 = algIII(n, N_str, S_str, lo_str, hi_str)
     print(out1)
 
     ##   lower_bound upper_bound allocation
@@ -43,7 +55,7 @@ To see details justifying each selection, run `algIII` with the option
 
 Compare the above results to Neyman allocation
 
-    out2 <- neyman(n, N.str, S.str)
+    out2 = neyman(n, N_str, S_str)
     print(out2)
 
     ##    N      S allocation
@@ -74,17 +86,17 @@ changed by setting a global option for the `allocation` package.
 Algorithm IV: Sampling with Target Variance
 -------------------------------------------
 
-Test Algorithm IV using an example in the Wright (2017). Since our
-target variance `v0` is a very large number, we pass it as an `mpfr`
-object to avoid loss of precision.
+Run Algorithm IV using an example in Wright (2017). Since our target
+variance `v0` is a very large number, we pass it as an `mpfr` object to
+avoid loss of precision.
 
-    H <- 10
-    v0 <- mpfr(388910760, 256)^2
-    N.str <- c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
-    lo.str <- c(3,3,3,3,3,3,3,3,3,13)
-    S.str <- c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000, 29334000, 1233311000)
+    H = 10
+    v0 = mpfr(388910760, 256)^2
+    N_str = c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
+    lo_str = c(3,3,3,3,3,3,3,3,3,13)
+    S_str = c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000, 29334000, 1233311000)
 
-    out1 <- algIV(v0, N.str, S.str, lo.str)
+    out1 = algIV(v0, N_str, S_str, lo_str)
     print(out1)
 
     ##    lower_bound upper_bound allocation
@@ -112,10 +124,10 @@ data. See Wright (2017) for details. We also exclude the 10th stratum
 from the allocation procedure, as it is a certainty stratum; its
 allocation is considered fixed at 13.
 
-    cv <- 0.042
-    rev <- mpfr(9259780000, 256)
-    n <- sum(N.str[-10] * S.str[-10])^2 / ((cv * rev)^2 + sum(N.str[-10] * S.str[-10]^2))
-    out2 <- neyman(n, N.str[-10], S.str[-10])
+    cv = 0.042
+    rev = mpfr(9259780000, 256)
+    n = sum(N_str[-10] * S_str[-10])^2 / ((cv * rev)^2 + sum(N_str[-10] * S_str[-10]^2))
+    out2 = neyman(n, N_str[-10], S_str[-10])
     print(out2)
 
     ##     N               S allocation

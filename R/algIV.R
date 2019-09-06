@@ -2,53 +2,52 @@
 #' @aliases algIV
 #' @importFrom Rmpfr mpfr
 #' @export
-algIV <- function(v0, N.str, S.str,
-	lo.str = rep(1, length(N.str)),
-	hi.str = rep(Inf, length(N.str)),
+algIV = function(v0, N_str, S_str,
+	lo_str = rep(1, length(N_str)),
+	hi_str = rep(Inf, length(N_str)),
 	verbose = FALSE)
 {
-	stopifnot(length(N.str) == length(S.str))
-	stopifnot(length(N.str) == length(lo.str))
-	stopifnot(length(N.str) == length(hi.str))
+	stopifnot(length(N_str) == length(S_str))
+	stopifnot(length(N_str) == length(lo_str))
+	stopifnot(length(N_str) == length(hi_str))
 
-	prec.bits <- getOption("allocation.prec.bits")
+	prec_bits = getOption("allocation.prec.bits")
+	tol = getOption("allocation.algIV.tol")
 
 	if (class(v0) == "numeric") {
-		v0 <- mpfr(v0, prec.bits)
+		v0 = mpfr(v0, prec_bits)
 	} else if (class(v0) != "mpfr") {
 		stop("v0 must be provided as a single number or mpfr")
 	}
 
-	S.str <- mpfr(S.str, prec.bits)
-	hi.str <- pmin(hi.str, N.str)
-	n.str <- mpfr(lo.str, prec.bits)
+	S_str = mpfr(S_str, prec_bits)
+	hi_str = pmin(hi_str, N_str)
+	n_str = mpfr(lo_str, prec_bits)
 
-	if (any(n.str > hi.str)) {
+	if (any(n_str > hi_str)) {
 		stop("There are no feasible solutions")
 	}
 
-	r <- 0L
-	v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
+	r = 0L
+	v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
 
-	while (v > v0 && sum(n.str) < sum(N.str)) {
-		r <- r + 1L
-		V.str <- N.str * S.str / sqrt(n.str * (n.str+1)) * (n.str+1 <= hi.str)
-		h <- which.max(asNumeric(V.str))
+	while (v > v0 && sum(n_str) < sum(N_str)) {
+		r = r + 1L
+		V_str = N_str * S_str / sqrt(n_str * (n_str+1)) * (n_str+1 <= hi_str)
+		h = which.max(asNumeric(V_str))
 
 		if (verbose) {
 			printf("----- About to make selection %d -----\n", r)
-			printf("Target v0: %s\n", my.format(v0))
-			printf("So far achieved v: %s\n", my.format(v))
+			printf("Target v0: %s\n", my_format(v0))
+			printf("So far achieved v: %s\n", my_format(v))
 			print(data.frame(
-				value = my.format(V.str),
-				lower_bound = lo.str,
-				upper_bound = hi.str,
-				allocation = my.format(n.str,0)))
+				value = my_format(V_str),
+				lower_bound = lo_str,
+				upper_bound = hi_str,
+				allocation = my_format(n_str,0)))
 		}
-
-		# If all units are selected, all remaining strata values will be zero at
-		# this point. But maybe not exactly zero because of floating point math.
-		if (all(V.str <= 1e-10)) {
+		
+		if (all(V_str <= tol)) {
 			warning("All units from all strata have been selected, but v0 was not attained")
 			break
 		}
@@ -57,32 +56,32 @@ algIV <- function(v0, N.str, S.str,
 			cat("Now selecting a unit from strata", h, "\n")
 		}
 
-		n.str[h] <- n.str[h] + 1L
-		v <- sum(N.str * (N.str - n.str) * S.str^2 / n.str)
+		n_str[h] = n_str[h] + 1L
+		v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
 	}
 
 	structure(
-		list(n.str = n.str, lo.str = lo.str, hi.str = hi.str, reps = r, v = v,
-			v0 = v0, N.str = N.str, S.str = S.str),
+		list(n_str = n_str, lo_str = lo_str, hi_str = hi_str, reps = r, v = v,
+			v0 = v0, N_str = N_str, S_str = S_str),
 		class = "algIV"
 	)
 }
 
 #' @export
-print.algIV <- function(x, ...)
+print.algIV = function(x, ...)
 {
 	print(data.frame(
-		lower_bound = x$lo.str,
-		upper_bound = x$hi.str,
-		allocation = my.format(x$n.str, 0)))
+		lower_bound = x$lo_str,
+		upper_bound = x$hi_str,
+		allocation = my_format(x$n_str, 0)))
 	printf("----\n")
 	printf("Made %d selections\n", x$reps)
-	printf("Target v0: %s\n", my.format(x$v0))
-	printf("Achieved v: %s\n", my.format(x$v))
+	printf("Target v0: %s\n", my_format(x$v0))
+	printf("Achieved v: %s\n", my_format(x$v))
 	
 }
 
 #' @export
-alloc.algIV <- function(object) {
-	asNumeric(object$n.str)
+alloc.algIV = function(object) {
+	asNumeric(object$n_str)
 }

@@ -1,31 +1,32 @@
-.onLoad <- function(libname, pkgname){
+.onLoad = function(libname, pkgname){
 	options(allocation.prec.bits = 256)
 	options(allocation.print.decimals = 4)
+	options(allocation.algIV.tol = 1e-10)
 }
 
-normalize <- function(x)
+normalize = function(x)
 {
 	x / sum(x)
 }
 
-printf <- function(msg, ...)
+printf = function(msg, ...)
 {
 	cat(sprintf(msg, ...))
 }
 
 #' @importFrom Rmpfr asNumeric formatMpfr
-my.format <- function(x, decimal.digits = getOption("allocation.print.decimals"))
+my_format = function(x, decimal_digits = getOption("allocation.print.decimals"))
 {
-	L <- length(x)
+	L = length(x)
 
-	idx.notna <- which(!is.na(x) & abs(x) > 1)
-	whole.digits <- rep(1,L)
-	whole.digits[idx.notna] <- asNumeric(ceiling(log10(abs(x[idx.notna]))))
-	print.digits <- whole.digits + decimal.digits
+	idx_notna = which(!is.na(x) & abs(x) > 1)
+	whole_digits = rep(1,L)
+	whole_digits[idx_notna] = asNumeric(ceiling(log10(abs(x[idx_notna]))))
+	print_digits = whole_digits + decimal_digits
 
-	out <- numeric(L)
+	out = numeric(L)
 	for (l in 1:L) {
-		out[l] <- formatMpfr(x[l], digits = print.digits[l], big.mark = ",")
+		out[l] = formatMpfr(x[l], digits = print_digits[l], big.mark = ",")
 	}
 	return(out)
 }
@@ -42,7 +43,7 @@ my.format <- function(x, decimal.digits = getOption("allocation.print.decimals")
 #' @return A numeric vector; each element contains the allocation for the
 #' corresponding stratum.
 #' @export
-alloc <- function(object)
+alloc = function(object)
 {
 	UseMethod("alloc")
 }
