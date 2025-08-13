@@ -14,7 +14,6 @@ printf = function(msg, ...)
 	cat(sprintf(msg, ...))
 }
 
-#' @importFrom Rmpfr asNumeric formatMpfr
 my_format = function(x, decimal_digits = getOption("allocation.print.decimals"))
 {
 	L = length(x)
@@ -29,21 +28,4 @@ my_format = function(x, decimal_digits = getOption("allocation.print.decimals"))
 		out[l] = formatMpfr(x[l], digits = print_digits[l], big.mark = ",")
 	}
 	return(out)
-}
-
-
-#' @title
-#' Accessor for Solved Allocation
-#' 
-#' @description 
-#' Extract the solved allocation from the result of an an allocation method.
-#' 
-#' @param object Result from an allocation method
-#'
-#' @return A numeric vector; each element contains the allocation for the
-#' corresponding stratum.
-#' @export
-alloc = function(object)
-{
-	UseMethod("alloc")
 }

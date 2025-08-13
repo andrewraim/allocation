@@ -2,9 +2,9 @@
 *.R
 *.log
 notes_files
-fntl_files
+allocation_files
 notes.*
-fntl.pdf
-fntl-*.pdf
-fntl.html.md
+allocation.pdf
+allocation-*.pdf
+allocation.html.md
 

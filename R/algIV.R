@@ -1,15 +1,13 @@
-#' @name Allocation Methods
-#' @aliases algIV
-#' @importFrom Rmpfr mpfr
+#' @name Allocation-Methods
 #' @export
-algIV = function(v0, N_str, S_str,
-	lo_str = rep(1, length(N_str)),
-	hi_str = rep(Inf, length(N_str)),
-	verbose = FALSE)
+algIV = function(v0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 {
-	stopifnot(length(N_str) == length(S_str))
-	stopifnot(length(N_str) == length(lo_str))
-	stopifnot(length(N_str) == length(hi_str))
+	H = length(N)
+	if (is.null(lo)) { lo = rep(1, H) }
+	if (is.null(hi)) { hi = rep(Inf, H) }
+	stopifnot(H == length(S))
+	stopifnot(H == length(lo))
+	stopifnot(H == length(hi))
 
 	prec_bits = getOption("allocation.prec.bits")
 	tol = getOption("allocation.algIV.tol")
@@ -20,49 +18,50 @@ algIV = function(v0, N_str, S_str,
 		stop("v0 must be provided as a single number or mpfr")
 	}
 
-	S_str = mpfr(S_str, prec_bits)
-	hi_str = pmin(hi_str, N_str)
-	n_str = mpfr(lo_str, prec_bits)
+	S = mpfr(S, prec_bits)
+	hi = pmin(hi, N)
+	n = mpfr(lo, prec_bits)
 
-	if (any(n_str > hi_str)) {
+	if (any(n > hi)) {
 		stop("There are no feasible solutions")
 	}
 
 	r = 0L
-	v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
+	v = sum(N * (N - n) * S^2 / n)
 
-	while (v > v0 && sum(n_str) < sum(N_str)) {
+	while (v > v0 && sum(n) < sum(N)) {
 		r = r + 1L
-		V_str = N_str * S_str / sqrt(n_str * (n_str+1)) * (n_str+1 <= hi_str)
-		h = which.max(asNumeric(V_str))
+		V = N * S / sqrt(n * (n+1)) * (n+1 <= hi)
+		h = which.max(asNumeric(V))
 
 		if (verbose) {
 			printf("----- About to make selection %d -----\n", r)
 			printf("Target v0: %s\n", my_format(v0))
 			printf("So far achieved v: %s\n", my_format(v))
-			print(data.frame(
-				value = my_format(V_str),
-				lower_bound = lo_str,
-				upper_bound = hi_str,
-				allocation = my_format(n_str,0)))
+			df = data.frame(
+				value = my_format(V),
+				lower_bound = lo,
+				upper_bound = hi,
+				allocation = my_format(n,0))
+			print(df)
 		}
 		
-		if (all(V_str <= tol)) {
+		if (all(V <= tol)) {
 			warning("All units from all strata have been selected, but v0 was not attained")
 			break
 		}
 
 		if (verbose) {
-			cat("Now selecting a unit from strata", h, "\n")
+			printf("Now selecting a unit from strata %d\n", h)
 		}
 
-		n_str[h] = n_str[h] + 1L
-		v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
+		n[h] = n[h] + 1L
+		v = sum(N * (N - n) * S^2 / n)
 	}
 
 	structure(
-		list(n_str = n_str, lo_str = lo_str, hi_str = hi_str, reps = r, v = v,
-			v0 = v0, N_str = N_str, S_str = S_str),
+		list(n = n, lo = lo, hi = hi, iter = r, v = v,
+			v0 = v0, N = N, S = S),
 		class = "algIV"
 	)
 }
@@ -70,10 +69,11 @@ algIV = function(v0, N_str, S_str,
 #' @export
 print.algIV = function(x, ...)
 {
-	print(data.frame(
-		lower_bound = x$lo_str,
-		upper_bound = x$hi_str,
-		allocation = my_format(x$n_str, 0)))
+	df = data.frame(
+		lower_bound = x$lo,
+		upper_bound = x$hi,
+		allocation = my_format(x$n, 0))
+	print(df)
 	printf("----\n")
 	printf("Made %d selections\n", x$reps)
 	printf("Target v0: %s\n", my_format(x$v0))
@@ -83,5 +83,5 @@ print.algIV = function(x, ...)
 
 #' @export
 alloc.algIV = function(object) {
-	asNumeric(object$n_str)
+	asNumeric(object$n)
 }

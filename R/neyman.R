@@ -1,18 +1,16 @@
-#' @name Allocation Methods
-#' @aliases neyman
-#' @importFrom Rmpfr mpfr
+#' @name Allocation-Methods
 #' @export
-neyman = function(n, N_str, S_str)
+neyman = function(n0, N, S)
 {
-	stopifnot(length(N_str) == length(S_str))
+	stopifnot(length(N) == length(S))
 
 	prec_bits = getOption("allocation.prec.bits")
-	S_str = mpfr(S_str, prec_bits)
-	n_str = n * normalize(N_str * S_str)
-	v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
+	S = mpfr(S, prec_bits)
+	n = n0 * normalize(N * S)
+	v = sum(N * (N - n) * S^2 / n)
 
 	structure(
-		list(N_str = N_str, S_str = S_str, n_str = n_str, v = v),
+		list(N = N, S = S, n = n, v = v),
 		class = "neyman"
 	)
 }
@@ -20,15 +18,16 @@ neyman = function(n, N_str, S_str)
 #' @export
 print.neyman = function(x, ...)
 {
-	print(data.frame(
-		N = x$N_str,
-		S = my_format(x$S_str),
-		allocation = my_format(x$n_str)))
+	df = data.frame(
+		N = x$N,
+		S = my_format(x$S),
+		allocation = my_format(x$n))
+	print(df)
 	printf("----\n")
 	printf("v: %s\n", my_format(x$v))
 }
 
 #' @export
 alloc.neyman = function(object) {
-	asNumeric(object$n_str)
+	asNumeric(object$n)
 }

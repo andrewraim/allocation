@@ -1,58 +1,56 @@
-#' @name Allocation Methods
-#' @aliases algIII
-#' @importFrom Rmpfr mpfr asNumeric
+#' @name Allocation-Methods
 #' @export
-algIII = function(n, N_str, S_str,
-	lo_str = rep(1, length(N_str)),
-	hi_str = rep(Inf, length(N_str)),
-	verbose = FALSE)
+algIII = function(n0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 {
-	stopifnot(length(N_str) == length(S_str))
-	stopifnot(length(N_str) == length(lo_str))
-	stopifnot(length(N_str) == length(hi_str))
+	H = length(N)
+	if (is.null(lo)) { lo = rep(1, H) }
+	if (is.null(hi)) { hi = rep(Inf, H) }
+	stopifnot(H == length(S))
+	stopifnot(H == length(lo))
+	stopifnot(H == length(hi))
 
 	prec_bits = getOption("allocation.prec.bits")
-	S_str = mpfr(S_str, prec_bits)
-	hi_str = pmin(hi_str, N_str)
-	n_str = mpfr(lo_str, prec_bits)
+	S = mpfr(S, prec_bits)
+	hi = pmin(hi, N)
+	n = mpfr(lo, prec_bits)
 
-	if (any(n_str > hi_str)) {
+	if (any(n > hi)) {
 		stop("There are no feasible solutions")
 	}
 
 	r = 0L
-	while (sum(n_str) < n) {
+	while (sum(n) < n0) {
 		r = r + 1L
-		V_str = N_str * S_str / sqrt(n_str * (n_str+1)) * (n_str+1 <= hi_str)
-		h = which.max(asNumeric(V_str))
+		V = N * S / sqrt(n * (n+1)) * (n+1 <= hi)
+		h = which.max(asNumeric(V))
 
 		if (verbose) {
-			cat("----- About to make selection", r, "-----\n")
-			print(data.frame(
-				value = my_format(V_str),
-				lower_bound = lo_str,
-				upper_bound = hi_str,
-				allocation = my_format(n_str, 0)))
-			cat("Selecting a unit from strata", h, "\n")
+			printf("----- About to make selection %d -----\n", r)
+			df = data.frame(
+				value = my_format(V),
+				lower_bound = lo,
+				upper_bound = hi,
+				allocation = my_format(n, 0))
+			print(df)
+			printf("Selecting a unit from strata %d\n", h)
 		}
 
-		n_str[h] = n_str[h] + 1L
+		n[h] = n[h] + 1L
 	}
 
-	v = sum(N_str * (N_str - n_str) * S_str^2 / n_str)
+	v = sum(N * (N - n) * S^2 / n)
 
 	if (verbose) {
 		printf("----- After %d selections -----\n", r)
-		print(data.frame(
-			lower_bound = lo_str,
-			upper_bound = hi_str,
-			allocation = my_format(n_str, 0)))
+		df = data.frame(lower_bound = lo, upper_bound = hi,
+			allocation = my_format(n, 0))
+		print(df)
 		printf("v = %s\n", my_format(v))
 	}
 
 	structure(
-		list(n_str = n_str, lo_str = lo_str, hi_str = hi_str, reps = r, v = v,
-			N_str = N_str, S_str = S_str),
+		list(n = n, lo = lo, hi = hi, iter = r, v = v,
+			N = N, S = S),
 		class = "algIII"
 	)
 }
@@ -60,17 +58,18 @@ algIII = function(n, N_str, S_str,
 #' @export
 print.algIII = function(x, ...)
 {
-	print(data.frame(
-		lower_bound = x$lo_str,
-		upper_bound = x$hi_str,
-		allocation = my_format(x$n_str, 0)))
+	df = data.frame(
+		lower_bound = x$lo,
+		upper_bound = x$hi,
+		allocation = my_format(x$n, 0))
+	print(df)
 	printf("----\n")
-	printf("Made %d selections\n", x$reps)
-	printf("Target n: %s\n", my_format(sum(x$n_str)))
+	printf("Made %d selections\n", x$iter)
+	printf("Target n: %s\n", my_format(sum(x$n)))
 	printf("Achieved v: %s\n", my_format(x$v))
 }
 
 #' @export
 alloc.algIII = function(object) {
-	asNumeric(object$n_str)
+	asNumeric(object$n)
 }
