@@ -31,12 +31,12 @@ bibliography: references.bib
 editor_options: 
   chunk_output_type: console
 abstract: |
-  R programmers can combine R and C++ to effectively navigate ...
+  Abstract goes here ...
 thanks: |
-  corresponds to `allocation` version `{r} packageVersion("allocation")`.
-  Methodology, U.S. Census Bureau, Washington, DC, 20233, U.S.A.
   Document was compiled `{r} format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")` and
+  corresponds to `allocation` version `{r} packageVersion("allocation")`.
   **Contact**`:` <andrew.raim@census.gov>, Center for Statistical Research &
+  Methodology, U.S. Census Bureau, Washington, DC, 20233, U.S.A.
 geometry:
   - left=0.75in
   - right=0.75in
@@ -66,7 +66,7 @@ the authors and not those of the U.S. Census Bureau.
 Although there are no guarantees of correctness of the `allocation` package,
 reasonable efforts will be made to address shortcomings. Comments, questions,
 corrections, and possible improvements can be communicated through the
-package Github [repository](https://github.com/andrewraim/allocation).
+Github [repository](https://github.com/andrewraim/allocation) for the package.
 
 # Introduction {#sec-intro}
 
@@ -82,8 +82,9 @@ library(Rmpfr)
 
 # Overview of the Package
 
-# Examples
+TBD
 
+# Examples
 
 ## Allocation for Fixed Sample Size
 
@@ -129,7 +130,7 @@ options(allocation.print.decimals = 4)
 
 ## Allocation for Target Precision
 
-Run Algorithm IV using an example in Wright (2017). Since our target
+Run Algorithm IV using an example in @Wright2017. Since our target
 variance `v0` is a very large number, we pass it as an `mpfr` object to
 avoid loss of precision.
 
