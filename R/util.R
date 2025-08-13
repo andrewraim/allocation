@@ -1,9 +1,3 @@
-.onLoad = function(libname, pkgname){
-	options(allocation.prec.bits = 256)
-	options(allocation.print.decimals = 4)
-	options(allocation.algIV.tol = 1e-10)
-}
-
 normalize = function(x)
 {
 	x / sum(x)
@@ -14,12 +8,14 @@ printf = function(msg, ...)
 	cat(sprintf(msg, ...))
 }
 
-my_format = function(x, decimal_digits = getOption("allocation.print.decimals"))
+my_format = function(x, digits = 4L)
 {
 	L = length(x)
 
+	decimal_digits = digits
+	
 	idx_notna = which(!is.na(x) & abs(x) > 1)
-	whole_digits = rep(1,L)
+	whole_digits = rep(1, L)
 	whole_digits[idx_notna] = asNumeric(ceiling(log10(abs(x[idx_notna]))))
 	print_digits = whole_digits + decimal_digits
 

@@ -2,7 +2,6 @@
 % Please edit documentation in R/package.R
 \docType{package}
 \name{allocation-package}
-\alias{allocation}
 \alias{allocation-package}
 \title{allocation}
 \description{

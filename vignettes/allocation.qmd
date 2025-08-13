@@ -57,7 +57,6 @@ library(allocation)
 set.seed(1234)
 ```
 
-
 # Disclaimer and Acknowledgments {-}
 
 This document is released to inform interested parties of ongoing research and
@@ -67,7 +66,7 @@ the authors and not those of the U.S. Census Bureau.
 Although there are no guarantees of correctness of the `allocation` package,
 reasonable efforts will be made to address shortcomings. Comments, questions,
 corrections, and possible improvements can be communicated through the
-project's Github repository (<https://github.com/andrewraim/allocation>).
+package Github [repository](https://github.com/andrewraim/allocation).
 
 # Introduction {#sec-intro}
 
@@ -81,59 +80,43 @@ TBD: variance target
 library(Rmpfr)
 ```
 
-# Algorithm III: Sampling with Target Sample Size
+# Overview of the Package
 
-Run Algorithm III using an example in Wright (2017).
+# Examples
+
+
+## Allocation for Fixed Sample Size
+
+Run Algorithm III using an example in @Wright2017.
 
 ```{r}
-N_str = c(47, 61, 41)
-S_str = sqrt(c(100, 36, 16))
-lo_str = c(1,2,3)
-hi_str = c(5,6,4)
-n = 10
+N = c(47, 61, 41)
+S = sqrt(c(100, 36, 16))
+lo = c(1,2,3)
+hi = c(5,6,4)
+n0 = 10
 
-out1 = algIII(n, N_str, S_str, lo_str, hi_str)
+out1 = allocate_fixn(n0, N, S, lo, hi)
 print(out1)
-
-##   lower_bound upper_bound allocation
-## 1           1           5          4
-## 2           2           6          3
-## 3           3           4          3
-## ----
-## Made 4 selections
-## Target n: 10.000
-## Achieved v: 101,290.3333
 ```
 
-To see details justifying each selection, run `algIII` with the option
+To see details justifying each selection, run `allocate_fixn` with the option
 `verbose = TRUE`.
 
-Compare the above results to Neyman allocation
+Compare the above results to Neyman allocation.
 
 ```{r}
-out2 = neyman(n, N_str, S_str)
+out2 = allocate_neyman(n0, N, S)
 print(out2)
-
-##    N      S allocation
-## 1 47 10.000     4.7000
-## 2 61 6.0000     3.6600
-## 3 41 4.0000     1.6400
-## ----
-## v: 92,448.0000
 ```
 
 Internally, we work with high precision numbers via the `Rmpfr` package.
-We provided an `alloc` accessor function to extract the allocation as a
+We provide an `allocation` accessor function to extract the allocation as a
 numeric vector.
 
 ```{r}
-alloc(out1)
-
-## [1] 4 3 3
-
-alloc(out2)
-
-## [1] 4.70 3.66 1.64
+allocation(out1)
+allocation(out2)
 ```
 
 The numerical precision and number of decimal points printed, can be
@@ -144,7 +127,7 @@ options(allocation.prec.bits = 256)
 options(allocation.print.decimals = 4)
 ```
 
-# Algorithm IV: Sampling with Target Variance
+## Allocation for Target Precision
 
 Run Algorithm IV using an example in Wright (2017). Since our target
 variance `v0` is a very large number, we pass it as an `mpfr` object to
@@ -153,17 +136,17 @@ avoid loss of precision.
 ```{r}
 H = 10
 v0 = mpfr(388910760, 256)^2
-N_str = c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
-lo_str = c(3,3,3,3,3,3,3,3,3,13)
-S_str = c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000,
+N = c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
+lo = c(3,3,3,3,3,3,3,3,3,13)
+S = c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000,
 	29334000, 1233311000)
 
-out1 = algIV(v0, N_str, S_str, lo_str)
+out1 = allocate_prec(v0, N, S, lo)
 print(out1)
 ```
 
-To see details justifying each selection, run `algIV` with the option
-`verbose = TRUE`.
+To see details justifying each selection, run `allocate_prec` with the
+option `verbose = TRUE`.
 
 Compare the above results to Neyman allocation. Here, we first need to
 compute a target sample size. This is done with a given cv and revenue
@@ -174,16 +157,16 @@ allocation is considered fixed at 13.
 ```{r}
 cv = 0.042
 rev = mpfr(9259780000, 256)
-n = sum(N_str[-10] * S_str[-10])^2 / ((cv * rev)^2 + sum(N_str[-10] * S_str[-10]^2))
-out2 = neyman(n, N_str[-10], S_str[-10])
+n = sum(N[-10] * S[-10])^2 / ((cv * rev)^2 + sum(N[-10] * S[-10]^2))
+out2 = allocate_neyman(n, N[-10], S[-10])
 print(out2)
 ```
 
 Extract the final allocations.
 
 ```{r}
-alloc(out1)
-alloc(out2)
+allocation(out1)
+allocation(out2)
 ```
 
 # References {-}

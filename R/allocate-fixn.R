@@ -1,6 +1,6 @@
 #' @name Allocation-Methods
 #' @export
-algIII = function(n0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
+allocate_fixn = function(n0, N, S, lo = NULL, hi = NULL, control = allocation_control())
 {
 	H = length(N)
 	if (is.null(lo)) { lo = rep(1, H) }
@@ -9,7 +9,8 @@ algIII = function(n0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 	stopifnot(H == length(lo))
 	stopifnot(H == length(hi))
 
-	prec_bits = getOption("allocation.prec.bits")
+	verbose = control$verbose
+	prec_bits = control$bits
 	S = mpfr(S, prec_bits)
 	hi = pmin(hi, N)
 	n = mpfr(lo, prec_bits)
@@ -28,9 +29,9 @@ algIII = function(n0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 			printf("----- About to make selection %d -----\n", r)
 			df = data.frame(
 				value = my_format(V),
-				lower_bound = lo,
-				upper_bound = hi,
-				allocation = my_format(n, 0))
+				lo = lo,
+				hi = hi,
+				n = my_format(n, 0L))
 			print(df)
 			printf("Selecting a unit from strata %d\n", h)
 		}
@@ -42,34 +43,37 @@ algIII = function(n0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 
 	if (verbose) {
 		printf("----- After %d selections -----\n", r)
-		df = data.frame(lower_bound = lo, upper_bound = hi,
-			allocation = my_format(n, 0))
+		df = data.frame(
+			lo = lo,
+			hi = hi,
+			n = my_format(n, 0L)
+		)
 		print(df)
 		printf("v = %s\n", my_format(v))
 	}
 
-	structure(
-		list(n = n, lo = lo, hi = hi, iter = r, v = v,
-			N = N, S = S),
-		class = "algIII"
-	)
+	out = list(n = n, lo = lo, hi = hi, iter = r, v = v, N = N, S = S)
+	structure(out, class = "allocation_fixn")
 }
 
 #' @export
-print.algIII = function(x, ...)
+print.allocation_fixn = function(x, control = allocation_control(), ...)
 {
+	digits = control$digits
 	df = data.frame(
-		lower_bound = x$lo,
-		upper_bound = x$hi,
-		allocation = my_format(x$n, 0))
+		lo = x$lo,
+		hi = x$hi,
+		n = my_format(x$n, 0L)
+	)
 	print(df)
 	printf("----\n")
 	printf("Made %d selections\n", x$iter)
-	printf("Target n: %s\n", my_format(sum(x$n)))
-	printf("Achieved v: %s\n", my_format(x$v))
+	printf("Target n: %s\n", my_format(sum(x$n), 0L))
+	printf("Achieved v: %s\n", my_format(x$v, digits))
 }
 
 #' @export
-alloc.algIII = function(object) {
+allocation.allocation_fixn = function(object)
+{
 	asNumeric(object$n)
 }

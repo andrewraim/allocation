@@ -8,9 +8,8 @@
 #' @return A numeric vector whose elements contain an allocation for the
 #' corresponding stratum.
 #' 
-#' @name alloc
 #' @export
-alloc = function(object)
+allocation = function(object)
 {
-	UseMethod("alloc")
+	UseMethod("allocation")
 }

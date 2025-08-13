@@ -1,6 +1,6 @@
 #' @name Allocation-Methods
 #' @export
-algIV = function(v0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
+allocate_prec = function(v0, N, S, lo = NULL, hi = NULL, control = allocation_control())
 {
 	H = length(N)
 	if (is.null(lo)) { lo = rep(1, H) }
@@ -9,8 +9,9 @@ algIV = function(v0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 	stopifnot(H == length(lo))
 	stopifnot(H == length(hi))
 
-	prec_bits = getOption("allocation.prec.bits")
-	tol = getOption("allocation.algIV.tol")
+	verbose = control$verbose
+	prec_bits = control$bits
+	tol = control$tol
 
 	if (class(v0) == "numeric") {
 		v0 = mpfr(v0, prec_bits)
@@ -40,9 +41,9 @@ algIV = function(v0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 			printf("So far achieved v: %s\n", my_format(v))
 			df = data.frame(
 				value = my_format(V),
-				lower_bound = lo,
-				upper_bound = hi,
-				allocation = my_format(n,0))
+				lo = lo,
+				hi = hi,
+				n = my_format(n,0L))
 			print(df)
 		}
 		
@@ -59,29 +60,27 @@ algIV = function(v0, N, S, lo = NULL, hi = NULL, verbose = FALSE)
 		v = sum(N * (N - n) * S^2 / n)
 	}
 
-	structure(
-		list(n = n, lo = lo, hi = hi, iter = r, v = v,
-			v0 = v0, N = N, S = S),
-		class = "algIV"
-	)
+	out = list(n = n, lo = lo, hi = hi, iter = r, v = v, v0 = v0, N = N, S = S)
+	structure(out, class = "allocation_prec")
 }
 
 #' @export
-print.algIV = function(x, ...)
+print.allocation_prec = function(x, control = allocation_control(), ...)
 {
+	digits = control$digits
 	df = data.frame(
-		lower_bound = x$lo,
-		upper_bound = x$hi,
-		allocation = my_format(x$n, 0))
+		lo = x$lo,
+		hi = x$hi,
+		n = my_format(x$n, 0L))
 	print(df)
 	printf("----\n")
 	printf("Made %d selections\n", x$reps)
-	printf("Target v0: %s\n", my_format(x$v0))
-	printf("Achieved v: %s\n", my_format(x$v))
-	
+	printf("Target v0: %s\n", my_format(x$v0, digits))
+	printf("Achieved v: %s\n", my_format(x$v, digits))
 }
 
 #' @export
-alloc.algIV = function(object) {
+allocation.allocation_prec = function(object)
+{
 	asNumeric(object$n)
 }
