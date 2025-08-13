@@ -1,0 +1,192 @@
+---
+title: "`allocation`: Exact Optimal Allocation Algorithms for Stratified Sampling"
+author:
+  - name: Andrew M. Raim
+    email: andrew.raim@census.gov
+  - name: Tommy Wright
+    email: Tommy.Wright@census.gov
+affiliations:
+  - name: U.S. Census Bureau
+    department: Center for Statistical Research and Methodology
+    address: 4600 Silver Hill Road
+    city: Washington DC
+    country: U.S.A.
+format:
+  pdf:
+    fontsize: 10pt
+    indent: false
+    toc: true
+    number-sections: true
+    colorlinks: true
+    link-citations: true
+    prompt: false
+    include-in-header:
+      text: |
+        \usepackage{common}
+vignette: >
+  %\VignetteIndexEntry{allocation}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{quarto::pdf}
+bibliography: references.bib
+editor_options: 
+  chunk_output_type: console
+abstract: |
+  R programmers can combine R and C++ to effectively navigate ...
+thanks: |
+  Document was compiled `{r} format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")` and
+  corresponds to `allocation` version `{r} packageVersion("allocation")`.
+  **Contact**`:` <andrew.raim@census.gov>, Center for Statistical Research &
+  Methodology, U.S. Census Bureau, Washington, DC, 20233, U.S.A.
+geometry:
+  - left=0.75in
+  - right=0.75in
+  - top=0.75in
+  - bottom=1.00in
+code-block-bg: "#FAFAFA"
+code-block-border-left: "#008CFF"
+callout-icon: false
+filters:
+  - include-code-files
+execute:
+  eval: true
+---
+
+```{r}
+#| include: false
+library(allocation)
+set.seed(1234)
+```
+
+
+# Disclaimer and Acknowledgments {-}
+
+This document is released to inform interested parties of ongoing research and
+to encourage discussion of work in progress. Any views expressed are those of
+the authors and not those of the U.S. Census Bureau.
+
+Although there are no guarantees of correctness of the `allocation` package,
+reasonable efforts will be made to address shortcomings. Comments, questions,
+corrections, and possible improvements can be communicated through the
+project's Github repository (<https://github.com/andrewraim/allocation>).
+
+# Introduction {#sec-intro}
+
+TBD: @Neyman1934, @Wright2012, and @Wright2017
+
+TBD: variance target
+
+```{r}
+#| message: false
+#| warning: false
+library(Rmpfr)
+```
+
+# Algorithm III: Sampling with Target Sample Size
+
+Run Algorithm III using an example in Wright (2017).
+
+```{r}
+N_str = c(47, 61, 41)
+S_str = sqrt(c(100, 36, 16))
+lo_str = c(1,2,3)
+hi_str = c(5,6,4)
+n = 10
+
+out1 = algIII(n, N_str, S_str, lo_str, hi_str)
+print(out1)
+
+##   lower_bound upper_bound allocation
+## 1           1           5          4
+## 2           2           6          3
+## 3           3           4          3
+## ----
+## Made 4 selections
+## Target n: 10.000
+## Achieved v: 101,290.3333
+```
+
+To see details justifying each selection, run `algIII` with the option
+`verbose = TRUE`.
+
+Compare the above results to Neyman allocation
+
+```{r}
+out2 = neyman(n, N_str, S_str)
+print(out2)
+
+##    N      S allocation
+## 1 47 10.000     4.7000
+## 2 61 6.0000     3.6600
+## 3 41 4.0000     1.6400
+## ----
+## v: 92,448.0000
+```
+
+Internally, we work with high precision numbers via the `Rmpfr` package.
+We provided an `alloc` accessor function to extract the allocation as a
+numeric vector.
+
+```{r}
+alloc(out1)
+
+## [1] 4 3 3
+
+alloc(out2)
+
+## [1] 4.70 3.66 1.64
+```
+
+The numerical precision and number of decimal points printed, can be
+changed by setting a global option for the `allocation` package.
+
+```{r}
+options(allocation.prec.bits = 256)
+options(allocation.print.decimals = 4)
+```
+
+# Algorithm IV: Sampling with Target Variance
+
+Run Algorithm IV using an example in Wright (2017). Since our target
+variance `v0` is a very large number, we pass it as an `mpfr` object to
+avoid loss of precision.
+
+```{r}
+H = 10
+v0 = mpfr(388910760, 256)^2
+N_str = c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
+lo_str = c(3,3,3,3,3,3,3,3,3,13)
+S_str = c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000,
+	29334000, 1233311000)
+
+out1 = algIV(v0, N_str, S_str, lo_str)
+print(out1)
+```
+
+To see details justifying each selection, run `algIV` with the option
+`verbose = TRUE`.
+
+Compare the above results to Neyman allocation. Here, we first need to
+compute a target sample size. This is done with a given cv and revenue
+data. See @Wright2017 for details. We also exclude the 10th stratum
+from the allocation procedure, as it is a certainty stratum; its
+allocation is considered fixed at 13.
+
+```{r}
+cv = 0.042
+rev = mpfr(9259780000, 256)
+n = sum(N_str[-10] * S_str[-10])^2 / ((cv * rev)^2 + sum(N_str[-10] * S_str[-10]^2))
+out2 = neyman(n, N_str[-10], S_str[-10])
+print(out2)
+```
+
+Extract the final allocations.
+
+```{r}
+alloc(out1)
+alloc(out2)
+```
+
+# References {-}
+
+::: {#refs}
+:::

@@ -8,11 +8,23 @@
 \alias{neyman}
 \title{Algorithms for Exact Optimization Allocation}
 \usage{
-algIII(n, N_str, S_str, lo_str = rep(1, length(N_str)),
-  hi_str = rep(Inf, length(N_str)), verbose = FALSE)
+algIII(
+  n,
+  N_str,
+  S_str,
+  lo_str = rep(1, length(N_str)),
+  hi_str = rep(Inf, length(N_str)),
+  verbose = FALSE
+)
 
-algIV(v0, N_str, S_str, lo_str = rep(1, length(N_str)),
-  hi_str = rep(Inf, length(N_str)), verbose = FALSE)
+algIV(
+  v0,
+  N_str,
+  S_str,
+  lo_str = rep(1, length(N_str)),
+  hi_str = rep(Inf, length(N_str)),
+  verbose = FALSE
+)
 
 neyman(n, N_str, S_str)
 }
@@ -38,19 +50,19 @@ allocation method.
 \description{
 Algorithms III and IV from Wright (2017), and classical (unconstrained)
 Neyman allocation. Algorithm III finds the optimial allocation for a
-given total sample size \code{n}. Algorithm IV samples until the overall
-variance is smaller than a given \code{v0}.
+given total sample size `n`. Algorithm IV allocates units until the
+overall variance is smaller than a given `v0`.
 }
 \details{
 Global options for the package (with defaults) are:
 \itemize{
-\item \code{options(allocation.prec.bits = 256)} Number of bits of
-    precision to use with \code{mpfr} objects in internal calculations.
-\item \code{options(allocation.print.decimals = 4)} Number of decimals
+\item `options(allocation.prec.bits = 256)` Number of bits of
+    precision to use with `mpfr` objects in internal calculations.
+\item `options(allocation.print.decimals = 4)` Number of decimals
     to display in output.
-\item \code{options(allocation.algIV.tol = 1e-10)} A small positive
-    number for use in algIV; if all strata have \code{V_str <= tol},
-    no more allocation is possible, even if target value \code{v0} has
+\item `options(allocation.algIV.tol = 1e-10)` A small positive
+    number for use in `algIV`; if all strata have `V_str <= tol`,
+    no more allocation is possible, even if target value `v0` has
     not yet been attained.
 }
 }
