@@ -33,10 +33,10 @@ editor_options:
 abstract: |
   Abstract goes here ...
 thanks: |
-  Document was compiled `{r} format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")` and
   corresponds to `allocation` version `{r} packageVersion("allocation")`.
-  **Contact**`:` <andrew.raim@census.gov>, Center for Statistical Research &
   Methodology, U.S. Census Bureau, Washington, DC, 20233, U.S.A.
+  Document was compiled `{r} format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")` and
+  **Contact**`:` <andrew.raim@census.gov>, Center for Statistical Research &
 geometry:
   - left=0.75in
   - right=0.75in
