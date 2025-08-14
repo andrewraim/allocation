@@ -7,3 +7,12 @@
 \description{
 Package documentation
 }
+\author{
+\strong{Maintainer}: Andrew M. Raim \email{andrew.raim@census.gov}
+
+Authors:
+\itemize{
+  \item Tommy Wright \email{Tommy.Wright@census.gov}
+}
+
+}

@@ -7,11 +7,14 @@
 allocation_control(verbose = FALSE, bits = 256, tol = 1e-10, digits = 4)
 }
 \arguments{
+\item{verbose}{Logical; if \code{TRUE}, detailed information will be printed to
+the console by \link{allocate_fixn} and \link{allocate_prec}.}
+
 \item{bits}{Number of bits of precision to use with \code{mpfr} objects in
 internal calculations.}
 
-\item{tol}{A small positive number for use in \code{algIV}; if all strata have
-\code{V <= tol}, regard the situation as one where no more allocation is
+\item{tol}{A small positive number for use in \link{allocate_prec}; if all strata
+have \code{V <= tol}, regard the situation as one where no more allocation is
 possible, even if target value \code{v0} has not yet been attained.}
 
 \item{digits}{Number of decimals to display in output.}

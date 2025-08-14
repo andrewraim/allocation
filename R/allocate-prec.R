@@ -13,9 +13,9 @@ allocate_prec = function(v0, N, S, lo = NULL, hi = NULL, control = allocation_co
 	prec_bits = control$bits
 	tol = control$tol
 
-	if (class(v0) == "numeric") {
+	if ("numeric" %in% class(v0)) {
 		v0 = mpfr(v0, prec_bits)
-	} else if (class(v0) != "mpfr") {
+	} else if (!("mpfr" %in% class(v0))) {
 		stop("v0 must be provided as a single number or mpfr")
 	}
 

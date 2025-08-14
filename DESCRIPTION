@@ -2,14 +2,19 @@ Package: allocation
 Type: Package
 Title: Exact Optimal Allocation Algorithms for Stratified Sampling
 Version: 0.1.0
-Author: Andrew M. Raim, Tommy Wright
-Maintainer: Andrew M. Raim <andrew.raim@census.gov>
+Authors@R: c(
+    person("Andrew M.", "Raim", email = "andrew.raim@census.gov",
+        role = c("aut", "cre")),
+    person("Tommy", "Wright", email = "Tommy.Wright@census.gov",
+        role = c("aut")))
 Description: 
-    This package implement several exact methods for allocating optimal sample
-    sizes when designing stratified samples. These methods are discussed in
+    Implements several exact methods for allocating optimal sample sizes when
+    designing stratified samples. These methods are discussed in
     <doi:10.1080/00031305.2012.733679> and <doi:10.1016/j.spl.2017.04.026>.
 License: MIT + file LICENSE
 Imports: Rmpfr
 RoxygenNote: 7.3.2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
+VignetteBuilder: quarto
+Suggests: quarto
