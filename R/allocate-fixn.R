@@ -22,13 +22,13 @@ allocate_fixn = function(n0, N, S, lo = NULL, hi = NULL, control = allocation_co
 	r = 0L
 	while (sum(n) < n0) {
 		r = r + 1L
-		V = N * S / sqrt(n * (n+1)) * (n+1 <= hi)
-		h = which.max(asNumeric(V))
+		P = N * S / sqrt(n * (n+1)) * (n+1 <= hi)
+		h = which.max(asNumeric(P))
 
 		if (verbose) {
 			printf("----- About to make selection %d -----\n", r)
 			df = data.frame(
-				value = my_format(V),
+				value = my_format(P),
 				lo = lo,
 				hi = hi,
 				n = my_format(n, 0L))

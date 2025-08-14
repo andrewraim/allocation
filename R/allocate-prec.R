@@ -32,22 +32,22 @@ allocate_prec = function(v0, N, S, lo = NULL, hi = NULL, control = allocation_co
 
 	while (v > v0 && sum(n) < sum(N)) {
 		r = r + 1L
-		V = N * S / sqrt(n * (n+1)) * (n+1 <= hi)
-		h = which.max(asNumeric(V))
+		P = N * S / sqrt(n * (n+1)) * (n+1 <= hi)
+		h = which.max(asNumeric(P))
 
 		if (verbose) {
 			printf("----- About to make selection %d -----\n", r)
 			printf("Target v0: %s\n", my_format(v0))
 			printf("So far achieved v: %s\n", my_format(v))
 			df = data.frame(
-				value = my_format(V),
+				value = my_format(P),
 				lo = lo,
 				hi = hi,
-				n = my_format(n,0L))
+				n = my_format(n, 0L))
 			print(df)
 		}
-		
-		if (all(V <= tol)) {
+
+		if (all(P <= tol)) {
 			warning("All units from all strata have been selected, but v0 was not attained")
 			break
 		}
