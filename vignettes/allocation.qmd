@@ -70,6 +70,9 @@ Github [repository](https://github.com/andrewraim/allocation) for the package.
 
 # Introduction {#sec-intro}
 
+This package implements several algorithms from @Wright2012 and @Wright2017 which reconsider the classic problem of allocating a sample into predetermined strata. Suppose there are $N$ units in a population which is partitioned into $H$ strata of known sizes $N_1, \ldots, N_H$. Suppose we
+would like to take a sample of size $n$ consisting of $n_1, \ldots, n_H$ units from the corresponding strata 
+
 TBD: @Neyman1934, @Wright2012, and @Wright2017
 
 TBD: variance target
