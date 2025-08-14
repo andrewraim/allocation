@@ -2,11 +2,13 @@
 #' 
 #' Additional arguments (controls) for [Allocation-Methods].
 #' 
+#' @param verbose Logical; if `TRUE`, detailed information will be printed to
+#' the console by [allocate_fixn] and [allocate_prec].
 #' @param bits Number of bits of precision to use with `mpfr` objects in
 #' internal calculations.
 #' @param digits Number of decimals to display in output.
-#' @param tol A small positive number for use in `algIV`; if all strata have
-#' `V <= tol`, regard the situation as one where no more allocation is
+#' @param tol A small positive number for use in [allocate_prec]; if all strata
+#' have `V <= tol`, regard the situation as one where no more allocation is
 #' possible, even if target value `v0` has not yet been attained.
 #'
 #' @return An list of class `allocation_control`.

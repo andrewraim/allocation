@@ -73,7 +73,7 @@ print.allocation_prec = function(x, control = allocation_control(), ...)
 		hi = x$hi,
 		n = my_format(x$n, 0L))
 	print(df)
-	printf("----\n")
+	printf("--\n")
 	printf("Made %d selections\n", x$reps)
 	printf("Target v0: %s\n", my_format(x$v0, digits))
 	printf("Achieved v: %s\n", my_format(x$v, digits))

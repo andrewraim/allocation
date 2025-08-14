@@ -34,11 +34,13 @@ bibliography: references.bib
 editor_options: 
   chunk_output_type: console
 abstract: |
-  In survey sampling, units in the population can be partitioned into
-  predetermined strata. The designer of the survey must determine the number of
-  units to sample from each strata. The `allocation` package implements several
-  algorithms from @Wright2012 and @Wright2017 which reconsider Neyman's classic
-  method of allocating a sample into such strata [@Neyman1934].
+  In survey sampling, units in the population are often partitioned into
+  strata based on predetermined criteria. The survey designer must determine
+  the number of units to sample from each strata. The `allocation` package
+  implements several algorithms from @Wright2012 and @Wright2017 which
+  reconsider Neyman's classic method of allocating a sample into such
+  strata [@Neyman1934]. These algorithms provide optimal integer-valued
+  solutions to minimize the variance of an estimator for the population total.
 thanks: |
   Document was compiled `{r} format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")` and
   corresponds to `allocation` version `{r} packageVersion("allocation")`.
@@ -73,7 +75,7 @@ the authors and not those of the U.S. Census Bureau.
 Although there are no guarantees of correctness of the `allocation` package,
 reasonable efforts will be made to address shortcomings. Comments, questions,
 corrections, and possible improvements can be communicated through the
-Github [repository](https://github.com/andrewraim/allocation) for the package.
+Github repository for the package (<https://github.com/andrewraim/allocation>).
 
 # Introduction {#sec-intro}
 
@@ -103,7 +105,9 @@ $$
 n_h = n \frac{N_h S_h}{\sum_{\ell=1}^H N_{\ell} S_{\ell}}, \quad h = 1, \ldots, H.
 $$
 
-Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are needed in practice; however, rounding may not yield the optimal integer solution. The allocation methods in @Wright2012 and @Wright2017 address this by directly obtaining integer solutions. Exploiting the structure of ([-@eq-var-total]), units are iteratively placed into strata to yield an optimal integer solution. Additionally, these methods support bounds $a_h > 0$ and $b_h \leq N_h$ such that $a_h \leq n_h \leq b_h$. We consider two methods in particular. Algorithm III of @Wright2017 assumes a target sample size of $n_0$ and finds an optimal allocation such that $\sum_{h=1}^H n_h = n_0$. Algorithm IV of @Wright2017 assumes a target variance assumes a target variance $V_0$ and finds an optimal allocation with the smallest overall sample size $\sum_{h=1}^H n_h$ such that ([-@eq-var-total]) is no larger than $V_0$. Algorithms III and IV of @Wright2017 are summarized as Algorithms \ref{alg:fixn} and \ref{alg:prec} here, respectively.
+Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are needed in practice; however, rounding may not yield an optimal integer solution. The allocation methods in @Wright2012 and @Wright2017 address this by directly obtaining integer solutions. Exploiting the structure of ([-@eq-var-total]), units are iteratively placed into strata to yield an optimal integer solution. Additionally, these methods support bounds $a_h > 0$ and $b_h \leq N_h$ such that $a_h \leq n_h \leq b_h$. We consider two methods in particular. Algorithm III of @Wright2017 assumes a target sample size of $n_0$ and finds an optimal allocation such that $\sum_{h=1}^H n_h = n_0$. Algorithm IV of @Wright2017 assumes a target variance assumes a target variance $V_0$ and finds an optimal allocation with the smallest overall sample size $\sum_{h=1}^H n_h$ such that ([-@eq-var-total]) is no larger than $V_0$. Algorithms III and IV of @Wright2017 are summarized as Algorithms \ref{alg:fixn} and \ref{alg:prec} here, respectively. See @Wright2017 for further details.
+
+The remainder of the vignette proceeds as follows. @sec-overview gives an overview of the `allocation` package and its interface. @sec-examples demonstrates use of the package on several examples from @Wright2017.
 
 <!-- Adapted from https://tex.stackexchange.com/a/439350 -->
 \algblock{Inputs}{EndInputs}
@@ -117,6 +121,8 @@ Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are need
 \begin{algorithmic}[1]
 \Inputs
 \State $n_0$: desired overall sample size.
+\State $N_1, \ldots, N_H$: population sizes.
+\State $S_1, \ldots, S_H$: standard deviations.
 \State $a_1, \ldots, a_H$: lower bounds.
 \State $b_1, \ldots, b_H$: upper bounds.
 \EndInputs
@@ -136,6 +142,8 @@ Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are need
 \begin{algorithmic}[1]
 \Inputs
 \State $V_0$: desired variance target.
+\State $N_1, \ldots, N_H$: population sizes.
+\State $S_1, \ldots, S_H$: standard deviations.
 \State $a_1, \ldots, a_H$: lower bounds.
 \State $b_1, \ldots, b_H$: upper bounds.
 \EndInputs
@@ -151,11 +159,9 @@ Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are need
 \end{algorithmic}
 \end{algorithm}
 
-**TBD:** Describe the rest of the vignette.
+# Overview of the Package {#sec-overview}
 
-# Overview of the Package
-
-TBD
+The `allocation` package makes use of the `Rmpfr` package to handle very large numbers while avoiding loss of precision. Furthermore, users may consider encode such values with `Rmpfr` rather than standard floating point numbers; especially for numbers such as target variances which may be very large.
 
 ```{r}
 #| message: false
@@ -163,11 +169,54 @@ TBD
 library(Rmpfr)
 ```
 
-# Examples
+The following functions carry out Neyman's method, Algorithm \ref{alg:fixn}, and Algorithm \ref{alg:prec}, respectively.
+
+```{r}
+#| echo: false
+print_interface = function(f) {
+	fname = deparse(substitute(f))
+	cat(fname, "=\n")
+	str(f, give.attr = F, nchar.max = 4096, width = 80)
+}
+```
+
+```{r}
+#| echo: false
+print_interface(allocate_neyman)
+print_interface(allocate_fixn)
+print_interface(allocate_prec)
+```
+
+The arguments are as follows:
+
+- `n0`: target sample size $n_0$,
+- `v0`: target variance $V_0$,
+- `N`: the vector $(N_1, \ldots, N_H)$,
+- `S`: the vector $(S_1, \ldots, S_H)$,
+- `lo`: the vector $(a_1, \ldots, a_H)$,
+- `hi`: the vector $(b_1, \ldots, b_H)$.
+
+The argument `control` contains additional arguments and can be created with
+the following function. See its manual page for further information.
+
+```{r}
+print_interface(allocation_control)
+```
+
+Several accessors are provided to operate on results from the allocation methods.
+
+```{r}
+#| eval: false
+out = allocate_fixn(n0, N, S)
+allocation(out)  ## Extract allocation (n[1], ..., n[H]).
+print(out)       ## Print table with allocation and other information.
+```
+
+# Examples {#sec-examples}
 
 ## Allocation for Fixed Sample Size
 
-Run Algorithm III using an example in @Wright2017.
+Here we demonstrate Algorithm \ref{alg:fixn} using an example in @Wright2017.
 
 ```{r}
 N = c(47, 61, 41)
@@ -180,8 +229,8 @@ out1 = allocate_fixn(n0, N, S, lo, hi)
 print(out1)
 ```
 
-To see details justifying each selection, run `allocate_fixn` with the option
-`verbose = TRUE`.
+To see details justifying each selection, run `allocate_fixn` with the
+`verbose` option enabled.
 
 Compare the above results to Neyman allocation.
 
@@ -190,26 +239,23 @@ out2 = allocate_neyman(n0, N, S)
 print(out2)
 ```
 
-Internally, we work with high precision numbers via the `Rmpfr` package.
-We provide an `allocation` accessor function to extract the allocation as a
-numeric vector.
+The number of decimal points in the output can be changed using the control object.
+
+```{r}
+print(out2, control = allocation_control(digits = 2))
+```
+
+Extract the allocation as a numeric vector using the `allocation` accessor function.
 
 ```{r}
 allocation(out1)
 allocation(out2)
 ```
 
-The numerical precision and number of decimal points printed, can be
-changed by setting a global option for the `allocation` package.
-
-```{r}
-options(allocation.prec.bits = 256)
-options(allocation.print.decimals = 4)
-```
 
 ## Allocation for a Desired Precision
 
-Run Algorithm IV using an example in @Wright2017. Since our target
+Run Algorithm \ref{alg:prec} using an example in @Wright2017. Since our target
 variance `v0` is a very large number, we pass it as an `mpfr` object to
 avoid loss of precision.
 
@@ -217,20 +263,26 @@ avoid loss of precision.
 H = 10
 v0 = mpfr(388910760, 256)^2
 N = c(819, 672, 358, 196, 135, 83, 53, 40, 35, 13)
-lo = c(3,3,3,3,3,3,3,3,3,13)
+lo = c(3, 3, 3, 3, 3, 3, 3, 3, 3, 13)
 S = c(330000, 518000, 488000, 634000, 1126000, 2244000, 2468000, 5869000,
 	29334000, 1233311000)
 
+print(data.frame(N, S, lo))
 out1 = allocate_prec(v0, N, S, lo)
 print(out1)
 ```
 
-To see details justifying each selection, run `allocate_prec` with the
-option `verbose = TRUE`.
+To see details justifying each selection, we can run `allocate_prec` with the
+`verbose` option enabled.
+
+```{r}
+#| eval: false
+out1 = allocate_prec(v0, N, S, lo, control = allocation_control(verbose = TRUE))
+```
 
 Compare the above results to Neyman allocation. Here, we first need to
 compute a target sample size. This is done with a given cv and revenue
-data. See @Wright2017 for details. We also exclude the 10th stratum
+data; see @Wright2017 for details. We also exclude the 10th stratum
 from the allocation procedure, as it is a certainty stratum; its
 allocation is considered fixed at 13.
 

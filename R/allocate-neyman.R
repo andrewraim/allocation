@@ -22,7 +22,7 @@ print.allocation_neyman = function(x, control = allocation_control(), ...)
 		S = my_format(x$S, digits),
 		n = my_format(x$n, digits))
 	print(df)
-	printf("----\n")
+	printf("--\n")
 	printf("v: %s\n", my_format(x$v, digits))
 }
 
