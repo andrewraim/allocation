@@ -2,7 +2,8 @@ Package: allocation
 Type: Package
 Title: Exact Optimal Allocation Algorithms for Stratified Sampling
 Version: 0.1.0
-Author: Andrew M. Raim
+Authors@R: person(given = c("Andrew", "M."), family = "Raim",
+    role = c("aut", "cre"), email = "andrew.raim@census.gov")
 Maintainer: Andrew M. Raim <andrew.raim@census.gov>
 Description: 
     Implements several exact methods for allocating optimal sample sizes when
