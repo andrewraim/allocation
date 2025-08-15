@@ -7,7 +7,3 @@
 \description{
 Package documentation
 }
-\author{
-\strong{Maintainer}: Andrew M. Raim \email{andrew.raim@census.gov}
-
-}
