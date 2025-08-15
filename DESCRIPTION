@@ -4,9 +4,7 @@ Title: Exact Optimal Allocation Algorithms for Stratified Sampling
 Version: 0.1.0
 Authors@R: c(
     person("Andrew M.", "Raim", email = "andrew.raim@census.gov",
-        role = c("aut", "cre")),
-    person("Tommy", "Wright", email = "Tommy.Wright@census.gov",
-        role = c("aut")))
+        role = c("aut", "cre")))
 Description: 
     Implements several exact methods for allocating optimal sample sizes when
     designing stratified samples. These methods are discussed in

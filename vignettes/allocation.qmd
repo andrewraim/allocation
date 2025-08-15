@@ -3,8 +3,6 @@ title: "`allocation`: Exact Optimal Allocation Algorithms for Stratified Samplin
 author:
   - name: Andrew M. Raim
     email: andrew.raim@census.gov
-  - name: Tommy Wright
-    email: Tommy.Wright@census.gov
 affiliations:
   - name: U.S. Census Bureau
     department: Center for Statistical Research and Methodology
@@ -34,11 +32,11 @@ bibliography: references.bib
 editor_options: 
   chunk_output_type: console
 abstract: |
-  In survey sampling, units in the population are often partitioned into
+  When sampling from a finite population, the $N$ units are often partitioned into
   strata based on predetermined criteria. The survey designer must determine
   the number of units to sample from each strata. The `allocation` package
   implements several algorithms from @Wright2012 and @Wright2017 which
-  reconsider Neyman's classic method of allocating a sample into such
+  reconsider Neyman's classic method of allocating a given sample size $n$ among such
   strata [@Neyman1934]. These algorithms provide optimal integer-valued
   solutions to minimize the variance of an estimator for the population total.
 thanks: |
@@ -70,7 +68,10 @@ set.seed(1234)
 
 This document is released to inform interested parties of ongoing research and
 to encourage discussion of work in progress. Any views expressed are those of
-the authors and not those of the U.S. Census Bureau.
+the author and not those of the U.S. Census Bureau.
+
+Thanks to Tommy Wright (U.S. Census Bureau) for discussions which prompted to
+the development of this package, and for providing a review of the materials.
 
 Although there are no guarantees of correctness of the `allocation` package,
 reasonable efforts will be made to address shortcomings. Comments, questions,
@@ -87,7 +88,7 @@ $$
 S_h^2 = \frac{1}{N_h - 1} \sum_{j=1}^{N_h} (Y_{hj} - \bar{Y}_h)^2,
 $$
 
-where $Y_{hj}$ is the value of the variable of interest for the $j$th unit. To estimate the population total of $T_Y = \sum_{h=1}^h \sum_{j=1}^{N_h} Y_{hj}$ from the sampled units, consider the estimator
+where $Y_{hj}$ is the value of the variable of interest for the $j$th unit. To estimate the population total of $T_Y = \sum_{h=1}^H N_h \bar{Y}_h$ from the sampled units, consider the estimator
 
 $$
 \hat{T}_Y = \sum_{h=1}^H N_h \bar{y}_h,
@@ -105,7 +106,7 @@ $$
 n_h = n \frac{N_h S_h}{\sum_{\ell=1}^H N_{\ell} S_{\ell}}, \quad h = 1, \ldots, H.
 $$
 
-Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are needed in practice; however, rounding may not yield an optimal integer solution. The allocation methods in @Wright2012 and @Wright2017 address this by directly obtaining integer solutions. Exploiting the structure of ([-@eq-var-total]), units are iteratively placed into strata to yield an optimal integer solution. Additionally, these methods support bounds $a_h > 0$ and $b_h \leq N_h$ such that $a_h \leq n_h \leq b_h$. We consider two methods in particular. Algorithm III of @Wright2017 assumes a target sample size of $n_0$ and finds an optimal allocation such that $\sum_{h=1}^H n_h = n_0$. Algorithm IV of @Wright2017 assumes a target variance assumes a target variance $V_0$ and finds an optimal allocation with the smallest overall sample size $\sum_{h=1}^H n_h$ such that ([-@eq-var-total]) is no larger than $V_0$. Algorithms III and IV of @Wright2017 are summarized as Algorithms \ref{alg:fixn} and \ref{alg:prec} here, respectively. See @Wright2017 for further details.
+Rounding is then used to obtain integer-valued $n_1, \ldots, n_H$ which are needed in practice; however, rounding may not yield an optimal integer solution. The allocation methods in @Wright2012 and @Wright2017 address this by directly obtaining integer solutions. Exploiting the structure of ([-@eq-var-total]), units are iteratively placed into strata to yield an optimal integer solution. Additionally, these methods support nonnegative real-valued bounds $a_h, b_h$ such that $a_h \leq n_h \leq b_h$, $a_h > 0$ and $b_h \leq N_h$. We consider two methods in particular. Algorithm III of @Wright2017 assumes a target sample size of $n_0$ and finds an optimal allocation such that $\sum_{h=1}^H n_h = n_0$. Algorithm IV of @Wright2017 assumes a target variance assumes a target variance $V_0$ and finds an optimal allocation with the smallest overall sample size $\sum_{h=1}^H n_h$ such that ([-@eq-var-total]) is no larger than $V_0$. Algorithms III and IV of @Wright2017 are summarized as Algorithms \ref{alg:fixn} and \ref{alg:prec} here, respectively. See @Wright2017 for further details.
 
 The remainder of the vignette proceeds as follows. @sec-overview gives an overview of the `allocation` package and its interface. @sec-examples demonstrates use of the package on several examples from @Wright2017.
 
@@ -116,7 +117,7 @@ The remainder of the vignette proceeds as follows. @sec-overview gives an overvi
 \algrenewtext{EndInputs}{\textbf{end inputs}}
 
 \begin{algorithm}
-\caption{Optimal allocation for a fixed sample size.}
+\caption{Optimal allocation for a fixed overall sample size.}
 \label{alg:fixn}
 \begin{algorithmic}[1]
 \Inputs
@@ -169,7 +170,7 @@ The `allocation` package makes use of the `Rmpfr` package to handle very large n
 library(Rmpfr)
 ```
 
-The following functions carry out Neyman's method, Algorithm \ref{alg:fixn}, and Algorithm \ref{alg:prec}, respectively.
+The following functions implement Neyman's allocation method, Algorithm \ref{alg:fixn}, and Algorithm \ref{alg:prec}, respectively.
 
 ```{r}
 #| echo: false
@@ -214,7 +215,7 @@ print(out)       ## Print table with allocation and other information.
 
 # Examples {#sec-examples}
 
-## Allocation for Fixed Sample Size
+## Allocation for Fixed Overall Sample Size
 
 Here we demonstrate Algorithm \ref{alg:fixn} using an example in @Wright2017.
 
@@ -229,10 +230,18 @@ out1 = allocate_fixn(n0, N, S, lo, hi)
 print(out1)
 ```
 
+Note that rows labels are the stratum indices $1, \ldots, H$. The columns
+`lo`, `hi`, and `n` correspond to the vectors $a_1, \ldots, a_H$,
+$b_1, \ldots, b_H$, and $n_1, \ldots, n_H$, respectively.
 To see details justifying each selection, run `allocate_fixn` with the
 `verbose` option enabled.
 
-Compare the above results to Neyman allocation.
+```{r}
+#| eval: false
+out1 = allocate_fixn(v0, N, S, lo, hi, control = allocation_control(verbose = TRUE))
+```
+
+Let us compare the above results to Neyman allocation.
 
 ```{r}
 out2 = allocate_neyman(n0, N, S)
@@ -248,8 +257,8 @@ print(out2, control = allocation_control(digits = 2))
 Extract the allocation as a numeric vector using the `allocation` accessor function.
 
 ```{r}
-allocation(out1)
-allocation(out2)
+allocation(out1)  ## allocate_fixn result 
+allocation(out2)  ## allocate_neyman result
 ```
 
 
@@ -297,8 +306,8 @@ print(out2)
 Extract the final allocations.
 
 ```{r}
-allocation(out1)
-allocation(out2)
+allocation(out1)  ## allocate_prec result
+allocation(out2)  ## allocate_neyman result
 ```
 
 # References {-}
