@@ -1,0 +1,10 @@
+*.html
+*.R
+*.log
+notes_files
+allocation_files
+notes.*
+allocation.pdf
+allocation-*.pdf
+allocation.html.md
+
