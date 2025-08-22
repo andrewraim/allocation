@@ -8,6 +8,6 @@
 Package documentation
 }
 \author{
-\strong{Maintainer}: Andrew M. Raim \email{andrew.raim@census.gov}
+\strong{Maintainer}: Andrew M. Raim \email{andrew.raim@gmail.com}
 
 }

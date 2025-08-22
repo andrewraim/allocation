@@ -32,17 +32,18 @@ bibliography: references.bib
 editor_options: 
   chunk_output_type: console
 abstract: |
-  When sampling from a finite population, the $N$ units are often partitioned into
-  strata based on predetermined criteria. The survey designer must determine
-  the number of units to sample from each strata. The `allocation` package
-  implements several algorithms from @Wright2012 and @Wright2017 which
-  reconsider Neyman's classic method of allocating a given sample size $n$ among such
-  strata [@Neyman1934]. These algorithms provide optimal integer-valued
-  solutions to minimize the variance of an estimator for the population total.
+  When sampling from a finite population, the $N$ units are often partitioned
+  into strata based on predetermined criteria. The survey designer must
+  determine the number of units to sample from each strata. The `allocation`
+  package implements several algorithms from @Wright2012 and @Wright2017 which
+  reconsider Neyman's classic method of allocating a given sample size $n$
+  among such strata [@Neyman1934]. These algorithms provide optimal
+  integer-valued solutions to minimize the variance of an estimator for the
+  population total.
 thanks: |
   Document was compiled `{r} format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")` and
   corresponds to `allocation` version `{r} packageVersion("allocation")`.
-  **Contact**`:` <andrew.raim@census.gov>, Center for Statistical Research &
+  **Contact**`:` <andrew.raim@gmail.com>, Center for Statistical Research &
   Methodology, U.S. Census Bureau, Washington, DC, 20233, U.S.A.
 geometry:
   - left=0.75in
